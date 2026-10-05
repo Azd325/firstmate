@@ -69,6 +69,12 @@ A `no-mistakes` or `no-mistakes-prod-only` project must have an `origin` remote 
 A `direct-PR` project needs an `origin` remote but skips no-mistakes initialization.
 A `local-only` project may have no remote and skips no-mistakes initialization.
 
+At intake, check whether the source is a fork of a parent repository that the operator cannot push to.
+If it is, clone the parent as `origin` from the start, treat the fork only as the push target, and confirm both URLs with the captain alongside the other stated defaults.
+Never repoint the remote of an existing clone as a repair, because the first clone must already be correct.
+A fork-backed `no-mistakes` or `no-mistakes-prod-only` project passes the fork to the initialization procedure below.
+A fork-backed project still needs that pushable fork for any work it ships `direct-PR`, including the internal-only work of a conditional policy, but Firstmate records no fork push target for that path, so state the gap at intake and name the fork in each such task's brief.
+
 ## Create a project
 
 Creating a GitHub repository is outward-facing.
@@ -87,6 +93,7 @@ Run no-mistakes initialization only for `no-mistakes` and `no-mistakes-prod-only
 cd projects/<name> && no-mistakes init && no-mistakes doctor
 ```
 
+For a fork-backed project, run `no-mistakes init --fork-url <fork-url>` in place of plain `no-mistakes init`, so that branches are pushed to the fork and PRs open against `origin`; the installed `no-mistakes init --help` owns that flag.
 Initialization configures the local gate and does not vendor a no-mistakes skill into the project.
 Do not create a commit merely because initialization ran.
 If doctor reports an environment, authentication, or daemon problem, resolve that blocker before dispatching work and never restart the shared daemon from a project operation.
