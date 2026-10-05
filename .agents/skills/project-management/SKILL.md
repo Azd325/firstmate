@@ -69,11 +69,11 @@ A `no-mistakes` or `no-mistakes-prod-only` project must have an `origin` remote 
 A `direct-PR` project needs an `origin` remote but skips no-mistakes initialization.
 A `local-only` project may have no remote and skips no-mistakes initialization.
 
-At intake, check whether the source is a fork of a parent repository that the operator cannot push to.
-If it is, clone the parent as `origin` from the start, treat the fork only as the push target, and confirm both URLs with the captain alongside the other stated defaults.
-Never repoint the remote of an existing clone as a repair, because the first clone must already be correct.
+At intake, check whether the operator can push to the repository the PRs target, whether the captain names that repository or a fork of it as the source.
+If the operator cannot, the project is fork-backed: clone that repository, the fork's parent, as `origin` from the start, treat the fork only as the push target, and confirm both URLs with the captain alongside the other stated defaults.
 A fork-backed `no-mistakes` or `no-mistakes-prod-only` project passes the fork to the initialization procedure below.
-A fork-backed project still needs that pushable fork for any work it ships `direct-PR`, including the internal-only work of a conditional policy, but Firstmate records no fork push target for that path, so state the gap at intake and name the fork in each such task's brief.
+Name the fork and its parent in the registry entry's description, so that per-task intake can read the fork from the registry.
+A fork-backed project still needs that pushable fork for any work it ships `direct-PR`, including the internal-only work of a conditional policy, but Firstmate has no fork push target for that path, so state the gap at intake.
 
 ## Create a project
 
