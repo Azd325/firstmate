@@ -1,0 +1,5 @@
+fm-gate-refuse: gate agent lifecycle permitted only against lab home /var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T//fm-lab.jZqUwX
+error: spawn refused: project /var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T/fm-lab.jZqUwX/projects/research has no commit yet (unborn HEAD), so there is nothing to branch a worktree from; make one commit in the project, for example 'git -C /var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T/fm-lab.jZqUwX/projects/research commit --allow-empty -m "chore: initial commit"', then spawn again
+env -u NO_MISTAKES_GATE -u FM_GATE_REFUSE_BYPASS -u FM_ROOT_OVERRIDE -u  -u    0.37s user 0.49s system 86% cpu 0.993 total
+exit=1
+commits: 0
