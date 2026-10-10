@@ -46,18 +46,6 @@ make_fake_toolchain() {
   fakebin=$(fm_fakebin "$dir")
   fm_fake_exit0 "$fakebin" tmux node chrome-devtools-axi
   fm_fake_version_tool "$fakebin" lavish-axi FM_FAKE_LAVISH_AXI_VERSION 0.1.80
-  cat > "$fakebin/curl" <<'SH'
-#!/usr/bin/env bash
-case "$*" in
-  *:4387/health*)
-    [ -n "${FM_FAKE_LAVISH_HEALTH:-}" ] || exit 7
-    printf '%s' "$FM_FAKE_LAVISH_HEALTH" ;;
-  *)
-    self=$(cd "$(dirname "$0")" && pwd)
-    PATH=$(printf '%s' "$PATH" | tr ':' '\n' | grep -vxF "$self" | paste -sd: -) exec curl "$@" ;;
-esac
-SH
-  chmod +x "$fakebin/curl"
   cat > "$fakebin/gh-axi" <<'SH'
 #!/usr/bin/env bash
 if [ "${1:-}" = --version ]; then
