@@ -1502,12 +1502,11 @@ if [ "${FM_BOOTSTRAP_DETECT_ONLY:-0}" != 1 ] && local_phase; then
   fi
 fi
 
-lavish_server_version_notice() {
-  local installed host port body served
+lavish_server_version_notice() {  # <installed major.minor.patch>
+  local installed=$1 host port body served
   command -v curl >/dev/null 2>&1 || return 0
-  installed=$(lavish-axi --version 2>/dev/null | head -n 1 | sed -E 's/^[^0-9]*//; s/[[:space:]].*$//')
-  [ -n "$installed" ] || return 0
   host=${LAVISH_AXI_HOST:-127.0.0.1}
+  case "$host" in \[*) ;; *:*) host="[$host]" ;; esac
   port=${LAVISH_AXI_PORT:-4387}
   body=$(curl -fsS -m 2 "http://$host:$port/health" 2>/dev/null) || return 0
   case "$body" in *'"app":"lavish-axi"'*) ;; *) return 0 ;; esac
@@ -1519,6 +1518,7 @@ lavish_server_version_notice() {
 # Local detection: presence, version floors, and configuration. Nothing here
 # leaves this machine, so it stays on the session-start critical path.
 detect_local_tools() {
+  local lavish_parts
   if [ "$BACKEND_VALID" -eq 0 ]; then
     echo "BACKEND_INVALID: $BACKEND (known: $FM_BACKEND_KNOWN)"
   fi
@@ -1542,13 +1542,14 @@ detect_local_tools() {
   if command -v gh-axi >/dev/null 2>&1 && ! tool_version_at_least gh-axi "$GH_AXI_MIN"; then
     echo "OUTDATED: gh-axi (installed: $(tool_version gh-axi); requires $GH_AXI_MIN; upgrade: $(upgrade_cmd gh-axi))"
   fi
-  if ! tool_version_at_least lavish-axi "$LAVISH_AXI_BOARD_MIN"; then
+  lavish_parts=$(tool_version_parts lavish-axi) || lavish_parts=
+  if [ -z "$lavish_parts" ] || ! version_parts_at_least "$lavish_parts" "$LAVISH_AXI_BOARD_MIN"; then
     echo "PRESENTATION_UNAVAILABLE: lavish-axi (requires >=$LAVISH_AXI_BOARD_MIN; install: $(install_cmd lavish-axi)) - nonvisual work may proceed with plain-text decisions and reports; install or upgrade before using Lavish"
-  elif ! tool_version_at_least lavish-axi "$LAVISH_AXI_MIN"; then
+  elif ! version_parts_at_least "$lavish_parts" "$LAVISH_AXI_MIN"; then
     echo "BOOTSTRAP_INFO: lavish-axi >=$LAVISH_AXI_MIN enables confirmed board replies; this older compatible version retains the legacy reply path, but upgrade to prevent handing back a board before its reply is accepted"
   fi
-  if tool_version_parts lavish-axi >/dev/null; then
-    lavish_server_version_notice
+  if [ -n "$lavish_parts" ]; then
+    lavish_server_version_notice "${lavish_parts// /.}"
   fi
   if command -v quota-axi >/dev/null 2>&1 && ! fm_quota_axi_compatible; then
     echo "OUTDATED: quota-axi (installed: $(tool_version quota-axi); requires $FM_QUOTA_AXI_MIN; upgrade: $(upgrade_cmd quota-axi))"
