@@ -46,6 +46,18 @@ make_fake_toolchain() {
   fakebin=$(fm_fakebin "$dir")
   fm_fake_exit0 "$fakebin" tmux node chrome-devtools-axi
   fm_fake_version_tool "$fakebin" lavish-axi FM_FAKE_LAVISH_AXI_VERSION 0.1.80
+  cat > "$fakebin/curl" <<'SH'
+#!/usr/bin/env bash
+case "$*" in
+  *:4387/health*)
+    [ -n "${FM_FAKE_LAVISH_HEALTH:-}" ] || exit 7
+    printf '%s' "$FM_FAKE_LAVISH_HEALTH" ;;
+  *)
+    self=$(cd "$(dirname "$0")" && pwd)
+    PATH=$(printf '%s' "$PATH" | tr ':' '\n' | grep -vxF "$self" | paste -sd: -) exec curl "$@" ;;
+esac
+SH
+  chmod +x "$fakebin/curl"
   cat > "$fakebin/gh-axi" <<'SH'
 #!/usr/bin/env bash
 if [ "${1:-}" = --version ]; then
@@ -417,6 +429,36 @@ much older lavish-axi minor permits text fallback^0.0.9^unavailable
 unparseable lavish-axi version permits text fallback^lavish-axi development build^unavailable
 ROWS
   pass "bootstrap preserves legacy Lavish boards while recommending synchronous reply support"
+}
+
+test_lavish_server_version_notice() {
+  local label version health mode case_dir fakebin out expected n
+  expected='BOOTSTRAP_INFO: lavish-axi 0.1.84 is installed but the running Lavish server is 0.1.85; the next lavish-axi call from either version restarts the server and interrupts live board polls'
+  n=0
+  while IFS='^' read -r label version health mode; do
+    [ -n "$label" ] || continue
+    n=$((n + 1))
+    case_dir="$TMP_ROOT/lavish-server-$n"
+    mkdir -p "$case_dir/home/config"
+    printf '%s\n' manual > "$case_dir/home/config/backlog-backend"
+    fakebin=$(make_fake_toolchain "$case_dir")
+    [ "$version" != absent ] || rm -f "$fakebin/lavish-axi"
+    out=$(PATH="$fakebin:$BASE_PATH" FM_HOME="$case_dir/home" FM_ROOT_OVERRIDE="$case_dir/home" \
+      FM_FAKE_TREEHOUSE_LEASE_HELP=1 FM_FAKE_LAVISH_AXI_VERSION="$version" FM_FAKE_LAVISH_HEALTH="$health" \
+      "$ROOT/bin/fm-bootstrap.sh") || fail "$label: the notice must not fail bootstrap"
+    case "$mode" in
+      empty) [ -z "$out" ] || fail "$label: expected silence, got: $out" ;;
+      notice) [ "$out" = "$expected" ] || fail "$label: expected '$expected', got: $out" ;;
+      unavailable-only) assert_not_contains "$out" 'running Lavish server' "$label: no notice without an installed lavish-axi" ;;
+    esac
+  done <<'ROWS'
+running server differs from the installed copy^0.1.84^{"ok":true,"app":"lavish-axi","version":"0.1.85","state_id":"x"}^notice
+running server matches the installed copy^0.1.84^{"ok":true,"app":"lavish-axi","version":"0.1.84","state_id":"x"}^empty
+no server is running^0.1.84^^empty
+a non-Lavish listener on the port stays silent^0.1.84^{"ok":true,"app":"other","version":"0.1.85"}^empty
+absent lavish-axi stays silent^absent^{"ok":true,"app":"lavish-axi","version":"0.1.85"}^unavailable-only
+ROWS
+  pass "bootstrap reports a differing running Lavish server version and stays silent otherwise"
 }
 
 test_tasks_axi_min_version() {
@@ -1248,6 +1290,7 @@ test_bootstrap_reporting
 test_no_mistakes_min_version
 test_gh_axi_min_version
 test_lavish_axi_min_version
+test_lavish_server_version_notice
 test_tasks_axi_min_version
 test_quota_axi_min_version
 test_git_is_required_with_supported_install_instruction

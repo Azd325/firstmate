@@ -1401,6 +1401,20 @@ if [ "${FM_BOOTSTRAP_DETECT_ONLY:-0}" != 1 ] && local_phase; then
   fi
 fi
 
+lavish_server_version_notice() {
+  local installed host port body served
+  command -v curl >/dev/null 2>&1 || return 0
+  installed=$(lavish-axi --version 2>/dev/null | head -n 1 | sed -E 's/^[^0-9]*//; s/[[:space:]].*$//')
+  [ -n "$installed" ] || return 0
+  host=${LAVISH_AXI_HOST:-127.0.0.1}
+  port=${LAVISH_AXI_PORT:-4387}
+  body=$(curl -fsS -m 2 "http://$host:$port/health" 2>/dev/null) || return 0
+  case "$body" in *'"app":"lavish-axi"'*) ;; *) return 0 ;; esac
+  served=$(printf '%s' "$body" | sed -nE 's/.*"version":"([^"]+)".*/\1/p' | head -n 1)
+  [ -n "$served" ] && [ "$served" != "$installed" ] || return 0
+  echo "BOOTSTRAP_INFO: lavish-axi $installed is installed but the running Lavish server is $served; the next lavish-axi call from either version restarts the server and interrupts live board polls"
+}
+
 # Local detection: presence, version floors, and configuration. Nothing here
 # leaves this machine, so it stays on the session-start critical path.
 detect_local_tools() {
@@ -1431,6 +1445,9 @@ detect_local_tools() {
     echo "PRESENTATION_UNAVAILABLE: lavish-axi (requires >=$LAVISH_AXI_BOARD_MIN; install: $(install_cmd lavish-axi)) - nonvisual work may proceed with plain-text decisions and reports; install or upgrade before using Lavish"
   elif ! tool_version_at_least lavish-axi "$LAVISH_AXI_MIN"; then
     echo "BOOTSTRAP_INFO: lavish-axi >=$LAVISH_AXI_MIN enables confirmed board replies; this older compatible version retains the legacy reply path, but upgrade to prevent handing back a board before its reply is accepted"
+  fi
+  if tool_version_parts lavish-axi >/dev/null; then
+    lavish_server_version_notice
   fi
   if command -v quota-axi >/dev/null 2>&1 && ! fm_quota_axi_compatible; then
     echo "MISSING: quota-axi (install: $(install_cmd quota-axi))"
