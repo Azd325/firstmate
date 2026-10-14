@@ -1,0 +1,27 @@
+RE-EMIT CUE: if this output ends with "Output too large ... Full output saved to <path>",
+read that whole file now, before acting. Otherwise read data/captain.md, data/captain-shared.md,
+and data/learnings.md under /var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T//fm-lab.y0luy0/data now if any of them is missing below.
+
+================================================================================
+SESSION START (CONTEXT RE-EMIT) - /var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T//fm-lab.y0luy0
+================================================================================
+This session already took the helm at its own startup and has only lost its
+context. Lock ownership is re-verified and the durable records below are
+reprinted, but the sweeps startup already reconciled - project clone refresh,
+secondmate convergence and liveness, pending remote handoff
+retry, X-mode artifact writes, and stale Herdr child cleanup - are NOT repeated.
+Queued wakes ARE still drained: they arrived after startup and are this turn work.
+
+LOCK
+--------------------------------------------------------------------------------
+error: cannot write session lock; operate read-only until resolved
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+●  READ-ONLY SESSION - FLEET LOCK OWNERSHIP WAS NOT VERIFIED
+●  error: cannot write session lock; operate read-only until resolved
+●  Skipping every mutating step: stale Herdr child cleanup,
+●  secondmate convergence, secondmate liveness, pending remote handoff retry,
+●  X-mode artifacts, fleet sync, and wake-queue drain. Detect-only bootstrap
+●  diagnostics and the rest of this read-only-safe digest still ran below.
+●  Operate read-only until this resolves - do not spawn, steer, merge, or
+●  otherwise mutate fleet state from this session.
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
