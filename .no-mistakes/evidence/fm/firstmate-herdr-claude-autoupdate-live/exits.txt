@@ -1,0 +1,5 @@
+fm-backend-herdr-respawn-idem-e2e exit=0
+fm-backend-herdr-agent-exit-shell-e2e exit=0
+fm-backend-herdr exit=0
+fm-crew-state exit=0
+fm-control-relaunch exit=0
