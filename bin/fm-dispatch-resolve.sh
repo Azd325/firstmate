@@ -62,6 +62,15 @@
 #   existing unreadable rules file, malformed rules, or missing jq), which is
 #   actionable, never selected around.
 #
+# Record: every resolution that reached the API (clear, ambiguous, escalate, or
+#   error after the request) appends one JSON line to $FM_HOME/state/
+#   dispatch-resolve.jsonl: ts, task (the <id> of data/<id>/brief.md, else
+#   null), project, status, rule, rule_when (first 60 characters), confidence,
+#   probabilities, fallback_rule when taken, and profile (harness, model,
+#   effort) when clear. It never holds brief text or the key. The off path and
+#   usage errors write nothing, and a failed write only prints one stderr
+#   warning; stdout and the exit code are unchanged.
+#
 # Environment:
 #   TYPESAFE_API_KEY is the only resolver-specific environment setting.
 #
@@ -230,8 +239,31 @@ done < <(jq -r '
 
 RULE_COUNT=$(jq -r '(.rules // []) | length' "$RULES")
 
+RECORD_PATH="$FM_HOME/state/dispatch-resolve.jsonl"
+REQUEST_SENT=0
+record_resolution() {
+  local line
+  line=$(jq -cn --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg brief "$BRIEF" --arg project "$PROJECT" --argjson r "$1" '
+    {
+      ts: $ts,
+      task: ($brief | capture("(^|/)data/(?<id>[^/]+)/brief\\.md$").id? // null),
+      project: $project,
+      status: $r.status,
+      rule: ($r.rule // null),
+      rule_when: ($r.rule_when // null),
+      confidence: ($r.confidence // null),
+      probabilities: ($r.probabilities // null),
+      fallback_rule: ($r.fallback_rule // null),
+      profile: (if $r.status == "clear" then ($r.chosen.profile | {harness, model: (.model // null), effort: (.effort // null)}) else null end)
+    }' 2>/dev/null) || line=''
+  if [ -z "$line" ] || ! { mkdir -p "$(dirname "$RECORD_PATH")" && printf '%s\n' "$line" >> "$RECORD_PATH"; } 2>/dev/null; then
+    echo "dispatch-resolve: could not write $RECORD_PATH" >&2
+  fi
+}
+
 emit_error() {
   local reason=$1
+  [ "$REQUEST_SENT" -eq 1 ] && record_resolution '{"status":"error"}'
   echo "dispatch-resolve: error ($reason)" >&2
   printf 'dispatch-resolve:\n  status: error\n  reason: %s\n' "$reason"
   exit 0
@@ -322,6 +354,7 @@ command -v curl >/dev/null 2>&1 || emit_error "curl not installed"
       }
     }')
   never_send_check
+  REQUEST_SENT=1
   T0=$(fm_timing_now_ms)
   HTTP=$(printf '%s' "$REQUEST" | curl -sS --max-time "$TS_TIMEOUT" -o "$RESP_FILE" -w '%{http_code}' \
     -X POST "$TS_BASE/v1/systemone" -H 'Content-Type: application/json' \
@@ -516,5 +549,6 @@ TEXT=$(jq -r '
   (if .chosen then "  profile: --harness \(.chosen.profile.harness | shell_arg)"
       + (if .chosen.profile.model then " --model \(.chosen.profile.model | shell_arg)" else "" end)
       + (if .chosen.profile.effort then " --effort \(.chosen.profile.effort | shell_arg)" else "" end) else empty end)' <<<"$RESULT") || emit_error "output rendering failed"
+record_resolution "$RESULT"
 printf '%s\n' "$TEXT"
 exit 0
