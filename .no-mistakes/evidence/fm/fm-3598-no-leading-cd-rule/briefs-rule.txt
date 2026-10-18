@@ -1,0 +1,16 @@
+== s1
+71:8. Never start a shell command with `cd`, and never run a search whose path depends on the current directory.
+72-   Use absolute paths, `git -C <abs>`, or a `( cd <abs> && ... )` subshell.
+73-   Pass this rule to every sub-agent you launch.
+== p-no-mistakes
+83:8. Never start a shell command with `cd`, and never run a search whose path depends on the current directory.
+84-   Use absolute paths, `git -C <abs>`, or a `( cd <abs> && ... )` subshell.
+85-   Pass this rule to every sub-agent you launch.
+== p-local-only
+80:8. Never start a shell command with `cd`, and never run a search whose path depends on the current directory.
+81-   Use absolute paths, `git -C <abs>`, or a `( cd <abs> && ... )` subshell.
+82-   Pass this rule to every sub-agent you launch.
+== p-direct-PR
+80:8. Never start a shell command with `cd`, and never run a search whose path depends on the current directory.
+81-   Use absolute paths, `git -C <abs>`, or a `( cd <abs> && ... )` subshell.
+82-   Pass this rule to every sub-agent you launch.
