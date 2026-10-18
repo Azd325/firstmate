@@ -1,0 +1,7 @@
+baseline (shell only): agent_state=no-agent backend=dead
+agent get: {"error":{"code":"agent_not_found","message":"agent target w1:p1 not found"},"id":"cli:agent:get"}
+fg: [{"name":"polytoken","argv0":"polytoken"}]
+S1 unregistered + harness-named fg (polytoken): process_state=agent agent_state=live backend=alive
+agent get: {"error":{"code":"agent_not_found","message":"agent target w1:p1 not found"},"id":"cli:agent:get"}
+S2 unregistered + non-harness fg: process_state=other agent_state=unknown backend=unreadable
+S3 back to shell: agent_state=no-agent backend=dead
