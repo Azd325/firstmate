@@ -1,0 +1,6 @@
+t1 registered=yes state=live
+t2 registered=yes state=live
+t3 registered=yes state=live
+t4 registered=yes state=live
+t5 registered=yes state=live
+t6 registered=yes state=live

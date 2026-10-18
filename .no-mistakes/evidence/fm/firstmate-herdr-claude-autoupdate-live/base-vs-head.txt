@@ -1,0 +1,11 @@
+BASE (8ba34f1d) vs HEAD on same lab panes
+pane w4:p1 agent_not_found= argv0=["polytoken"]
+  base: no-agent
+  head: live
+pane w5:p1 agent_not_found= argv0=["vim"]
+  base: no-agent
+  head: unknown
+agent_state wrapper (head) for harness pane:
+unreadable
+agent_state wrapper (base) for harness pane:
+unreadable

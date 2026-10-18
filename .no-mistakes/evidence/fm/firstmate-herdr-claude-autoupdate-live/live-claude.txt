@@ -1,0 +1,12 @@
+== A: unregistered shell-only pane
+no-agent
+== B: unregistered pane, child process argv0=claude
+[{"argv":["-zsh"],"argv0":"zsh","cmdline":"-zsh","cwd":"~","name":"zsh","pid":10573}]
+{"error":{"code":"agent_not_found","message":"agent target w2:p1 not found"},"id":"cli:agent:get"}
+no-agent
+== C: unregistered pane with non-harness foreground (bash script + sleep) [pane w2:p1]
+live
+== B: unregistered pane [w3:p1], foreground process argv0=claude
+[{"argv":["claude","600"],"argv0":"claude","cmdline":"claude 600","cwd":"~","name":"sleep","pid":26983}]
+null
+unknown

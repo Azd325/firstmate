@@ -1,0 +1,17 @@
+pane w4:p1, argv0=polytoken (firstmate harness, assumed unknown to Herdr)
+{"error":{"code":"agent_not_found","message":"agent target w4:p1 not found"},"id":"cli:agent:get"}
+t1 registered= procs=["zsh"] state=no-agent
+{"error":{"code":"agent_not_found","message":"agent target w4:p1 not found"},"id":"cli:agent:get"}
+t2 registered= procs=["polytoken"] state=live
+{"error":{"code":"agent_not_found","message":"agent target w4:p1 not found"},"id":"cli:agent:get"}
+t3 registered= procs=["polytoken"] state=live
+{"error":{"code":"agent_not_found","message":"agent target w4:p1 not found"},"id":"cli:agent:get"}
+t4 registered= procs=["polytoken"] state=live
+{"error":{"code":"agent_not_found","message":"agent target w4:p1 not found"},"id":"cli:agent:get"}
+t5 registered= procs=["polytoken"] state=live
+{"error":{"code":"agent_not_found","message":"agent target w4:p1 not found"},"id":"cli:agent:get"}
+t6 registered= procs=["polytoken"] state=live
+{"error":{"code":"agent_not_found","message":"agent target w4:p1 not found"},"id":"cli:agent:get"}
+t7 registered= procs=["polytoken"] state=live
+{"error":{"code":"agent_not_found","message":"agent target w4:p1 not found"},"id":"cli:agent:get"}
+t8 registered= procs=["polytoken"] state=live
