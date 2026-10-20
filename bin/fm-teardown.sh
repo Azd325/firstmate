@@ -3823,7 +3823,8 @@ elif [ -d "$WT" ] && [ "$KIND" != secondmate ]; then
     "$WT/.fm-grok-turnend" "$WT/.fm-kimi-turnend"
   remove_harness_worktree_wiring "$WT"
   # Kills remaining processes in the worktree, resets, returns to pool; kept in
-  # place instead while a spared unowned process still has its cwd there. treehouse resolves the pool from the working directory, so run it from
+  # place instead while a spared unowned process still has its cwd there.
+  # treehouse resolves the pool from the working directory, so run it from
   # the project. teardown_treehouse_return tolerates transient and stale git locks
   # left by a killed crew process; see the script header for retry and stale-lock proof.
   post_lock_cleanup_check=
