@@ -1,0 +1,15 @@
+ok - a leaked descendant process rooted under the task's worktree is reaped by teardown, not left surviving
+ok - a leaked descendant process rooted under the task's per-task tasktmp is reaped by teardown too
+ok - foreign TTY shell survives and is reported while the task-owned child is reaped, and both are logged durably
+ok - an init-reparented child in the endpoint shell's session is reaped and logged
+ok - an unproven agent that ends at pane close does not keep the worktree
+ok - TERM-resistant task-owned processes are force-killed without being spared when the endpoint shell dies
+ok - missing lsof falls back to reaping the tmux pane process group
+ok - an erroring lsof scan refuses teardown and preserves the task
+ok - a reused pid with a different start time is never force-killed
+ok - an exec change preserves birth identity and the process is reaped
+ok - a process spawned during grace is reaped on a later pass
+ok - persistent leaked processes refuse teardown after bounded retries
+ok - a process exiting during identity lookup does not block teardown
+ok - the run abort and the leaked-process reap both complete before the destructive worktree return
+timeout 500 bash tests/zz-targeted.test.sh  35.07s user 59.66s system 47% cpu 3:20.79 total
