@@ -1,0 +1,8 @@
+ok - a leaked descendant process rooted under the task's worktree is reaped by teardown, not left surviving
+ok - a leaked descendant process rooted under the task's per-task tasktmp is reaped by teardown too
+ok - foreign TTY shell survives and is reported while the task-owned child is reaped
+ok - an unproven agent that ends at pane close does not keep the worktree
+ok - missing lsof falls back to reaping the tmux pane process group
+ok - a reused pid with a different start time is never force-killed
+ok - an exec change preserves birth identity and the process is reaped
+ok - a process spawned during grace is reaped on a later pass
