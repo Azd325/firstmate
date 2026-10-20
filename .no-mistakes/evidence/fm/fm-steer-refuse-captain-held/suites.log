@@ -1,0 +1,32 @@
+fm-send-captain-hold exit=0
+ok - fm-send captain hold: a window target of a held task is refused
+ok - fm-send captain hold: an unreadable backlog refuses
+ok - fm-send captain hold: unheld tasks, backlog-less and data-less homes steer as before
+fm-send-resolve-key exit=0
+ok - fm-send --resolve-key: failed-close recovery commands safely quote operator text and paths
+ok - fm-send --resolve-key: a remote secondmate reserved-key close is the same local ledger append
+ok - fm-send --resolve-key: a decision answer refuses the attended branch before sending, a blocked: key stays steering, and the away-posture record relocates the answer
+fm-send-inbox exit=0
+ok - fm-send inbox: metadata lock contention fails bounded without enqueue
+ok - fm-send inbox: an unwritable record is a loud local failure that leaves no false expectation
+ok - fm-send: an empty or whitespace-only text steer refuses before marking, recording, or typing
+fm-send-strict exit=0
+ok - fm-send strict: unmatched single-colon explicit targets must verify live before sending
+ok - fm-send strict: fm-prefixed Herdr sessions remain explicit backend targets
+ok - fm-send strict: healthy fm-<id> sends record the steer and ring once
+fm-send-remote-delivery exit=0
+ok - fm-send local: an unconfirmed submit still never closes a --resolve-key decision
+ok - fm-send local: an unconfirmed secondmate send keeps its reply expectation armed
+all fm-send-remote-delivery tests passed
+fm-send-secondmate-marker exit=0
+ok - fm-send: the marker is '[fm-from-firstmate]' + terminal-safe U+2063, while direct captain text stays unmarked
+ok - fm-marker: from-firstmate transformation is idempotent
+ok - fm-send: marked secondmate payload preserves trailing newline bytes in its record
+fm-send-popup-settle exit=0
+ok - fm-send popup-settle: claude /command -> long settle (slash unchanged) -> 1.2s
+ok - fm-send popup-settle: codex /command -> long settle (slash unchanged) -> 1.2s
+ok - fm-send popup-settle: codex plain text -> inbox plane, fast doorbell
+fm-send-agy-confirm exit=0
+ok - agy typed send: never-rendering busy footer still refuses with verdict=unknown
+ok - agy typed send: long-brief render (15th poll) still confirms idle-to-busy
+ok - claude typed send: late busy footer still refuses (agy budget is agy-scoped)

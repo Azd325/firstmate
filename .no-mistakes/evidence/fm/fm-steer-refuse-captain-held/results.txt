@@ -1,0 +1,9 @@
+fm-send-captain-hold exit=0
+fm-send-resolve-key exit=0
+fm-send-inbox exit=0
+fm-send-strict exit=0
+fm-send-remote-delivery exit=0
+fm-send-secondmate-marker exit=0
+fm-send-popup-settle exit=0
+fm-send-agy-confirm exit=0
+fm-captain-hold-lifecycle exit=124
