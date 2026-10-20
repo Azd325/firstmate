@@ -302,7 +302,11 @@
 #     or members of its dedicated process group are signaled. Every other
 #     process (a foreign session shell, a reparented orphan, any backend
 #     without an endpoint pid) is spared and reported individually; it never
-#     blocks teardown, which goes on to close the pane.
+#     blocks teardown, which goes on to close the pane. A treehouse worktree
+#     with a spared process still in it is not force-returned: the return
+#     waits until after the pane close, re-scans the worktree, and the
+#     worktree is kept (surviving pids named) only if a spared process with
+#     the same identity still has its cwd there.
 #   Fix 3 - sweep abandoned remote job workers. A remote job worker started
 #     from a worktree's own bin/ outlives that worktree's removal without
 #     being reachable by Fix 2, because its working directory is wherever it
@@ -2262,11 +2266,12 @@ task_process_is_owned() {  # <pid>
 }
 
 TEARDOWN_SPARED_PIDS=
+TEARDOWN_RETURN_DEFERRED=0
 
 task_pids_under_roots() {  # <dir>...
   TASK_PIDS=
   TASK_PIDS_FAILED_DIR=
-  local dir dir_pids pid command pids=""
+  local dir dir_pids pid command identity pids=""
   for dir in "$@"; do
     [ -n "$dir" ] || continue
     if ! dir_pids=$(pids_with_cwd_under "$dir"); then
@@ -2288,7 +2293,9 @@ $dir_pids"
       fi
       if ! task_pid_list_contains "$TASK_REAP_REPORTED" "$pid"; then
         echo "teardown: spared unowned process $pid: $command" >&2
-        TEARDOWN_SPARED_PIDS="${TEARDOWN_SPARED_PIDS}${TEARDOWN_SPARED_PIDS:+$'\n'}$pid"
+        if identity=$(task_process_identity "$pid"); then
+          TEARDOWN_SPARED_PIDS="${TEARDOWN_SPARED_PIDS}${TEARDOWN_SPARED_PIDS:+$'\n'}$pid"$'\t'"$identity"
+        fi
         TASK_REAP_REPORTED="${TASK_REAP_REPORTED}${TASK_REAP_REPORTED:+$'\n'}$pid"
       fi
     fi
@@ -3707,6 +3714,49 @@ else
   fi
 fi
 
+teardown_spared_pids_in_worktree() {
+  local current pid identity
+  [ -n "$TEARDOWN_SPARED_PIDS" ] || return 0
+  current=$(pids_with_cwd_under "$WT") || current=$(printf '%s\n' "$TEARDOWN_SPARED_PIDS" | cut -f1)
+  while IFS=$'\t' read -r pid identity; do
+    [ -n "$pid" ] || continue
+    task_pid_list_contains "$current" "$pid" || continue
+    task_process_identity_matches "$pid" "$identity" || continue
+    printf '%s\n' "$pid"
+  done <<EOF
+$TEARDOWN_SPARED_PIDS
+EOF
+}
+
+teardown_finish_treehouse_return() {  # early|final
+  local survivors
+  survivors=$(teardown_spared_pids_in_worktree)
+  if [ -n "$survivors" ]; then
+    if [ "$1" = early ]; then
+      TEARDOWN_RETURN_DEFERRED=1
+    else
+      echo "teardown: kept worktree $WT; spared unowned process(es) still run in it: $(printf '%s' "$survivors" | tr '\n' ' ')" >&2
+    fi
+    return 0
+  fi
+  TEARDOWN_RETURN_DEFERRED=0
+  if [ "$KIND" = scout ] || [ "$FORCE" = "--force" ]; then
+    teardown_scrub_scratch_copy "$WT" || exit 1
+  fi
+  wt_pool_slot=0
+  fm_treehouse_pool_slot "$PROJ" "$WT" && wt_pool_slot=1
+  teardown_treehouse_return "$WT" "$PROJ" "worktree" "$post_lock_cleanup_check" || {
+    echo "error: treehouse return failed for worktree $WT; teardown aborted" >&2
+    exit 1
+  }
+  [ "$wt_pool_slot" = 0 ] || teardown_note_dirty_return "$WT"
+  # The slot is back in the pool, so this task's claim on it is spent. Dropping
+  # it here - and only after a return that succeeded - keeps a returned slot
+  # unclaimed until its next holder claims it, and leaves the claim in place
+  # whenever the return did not actually happen.
+  fm_treehouse_slot_owner_release "$WT" "$ID"
+}
+
 # Every landed/discard-work refusal above has now passed (or --force skipped
 # them). Fix 1 and Fix 2 (see script header) run here, unconditionally on
 # --force, and before ANY destructive step below - a still-parked run or a
@@ -3766,33 +3816,15 @@ elif [ -d "$WT" ] && [ "$KIND" != secondmate ]; then
   rm -f "$WT/.claude/settings.local.json" "$WT/.opencode/plugins/fm-turn-end.js" \
     "$WT/.fm-grok-turnend" "$WT/.fm-kimi-turnend"
   remove_harness_worktree_wiring "$WT"
-  # Kills remaining processes in the worktree (including the agent), resets, returns
-  # to pool. treehouse resolves the pool from the working directory, so run it from
+  # Kills remaining processes in the worktree, resets, returns to pool; kept in
+  # place instead while a spared unowned process still has its cwd there. treehouse resolves the pool from the working directory, so run it from
   # the project. teardown_treehouse_return tolerates transient and stale git locks
   # left by a killed crew process; see the script header for retry and stale-lock proof.
   post_lock_cleanup_check=
   if [ "$FORCE" != "--force" ] && [ "$KIND" != scout ] && [ "$KIND" != secondmate ]; then
     post_lock_cleanup_check=validate_worktree_teardown_safety
   fi
-  if [ -n "$TEARDOWN_SPARED_PIDS" ]; then
-    echo "teardown: kept worktree $WT; spared unowned process(es) still run in it: $(printf '%s' "$TEARDOWN_SPARED_PIDS" | tr '\n' ' ')" >&2
-  else
-    if [ "$KIND" = scout ] || [ "$FORCE" = "--force" ]; then
-      teardown_scrub_scratch_copy "$WT" || exit 1
-    fi
-    wt_pool_slot=0
-    fm_treehouse_pool_slot "$PROJ" "$WT" && wt_pool_slot=1
-    teardown_treehouse_return "$WT" "$PROJ" "worktree" "$post_lock_cleanup_check" || {
-      echo "error: treehouse return failed for worktree $WT; teardown aborted" >&2
-      exit 1
-    }
-    [ "$wt_pool_slot" = 0 ] || teardown_note_dirty_return "$WT"
-    # The slot is back in the pool, so this task's claim on it is spent. Dropping
-    # it here - and only after a return that succeeded - keeps a returned slot
-    # unclaimed until its next holder claims it, and leaves the claim in place
-    # whenever the return did not actually happen.
-    fm_treehouse_slot_owner_release "$WT" "$ID"
-  fi
+  teardown_finish_treehouse_return early
 fi
 
 HERDR_PRESENTATION_JOURNAL="$STATE/$ID.herdr-presentation"
@@ -3886,6 +3918,7 @@ if [ "$BACKEND" = herdr ]; then
     exit 1
   fi
 fi
+[ "$TEARDOWN_RETURN_DEFERRED" != 1 ] || teardown_finish_treehouse_return final
 if [ "$KIND" != secondmate ]; then
   if ! FM_HOME="$FM_HOME" FM_STATE_OVERRIDE="$STATE" FM_DATA_OVERRIDE="$DATA" \
       "$SCRIPT_DIR/fm-inactive-reconcile.sh" report "$ID"; then
