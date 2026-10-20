@@ -1,0 +1,8 @@
+actionable: PR checks green awaiting merge authority: child=child state=done pr=https://github.com/o/r/pull/7
+actionable: PR checks green awaiting merge authority: child=child state=done pr=https://github.com/o/r/pull/7
+ok - green no-mistakes runs wake once before worker reports under either merge posture
+ok - early readiness requires an attributed green run and a canonical unreported ship PR
+ok - early no-mistakes readiness uses the existing parent delivery receipt
+ok - readiness the worker already reported is not delivered twice
+ok - the fast cadence reads only unreported no-mistakes ships
+not ok - a later unreported ship starved behind earlier ones on the fast cadence
