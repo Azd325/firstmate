@@ -139,8 +139,14 @@ SH
   # runner's own PATH. Tests exercising the run-abort path override
   # FM_FAKE_AXI_STATUS/FM_FAKE_NM_ABORT_LOG/FM_FAKE_NM_RUNS_LIST before
   # run_teardown.
+  # When FM_FAKE_NM_EXPECT_HOME is set, the stub sees runs only from that
+  # NM_HOME, as a per-workspace daemon would: any other home answers no run
+  # and records no abort.
   cat > "$fakebin/no-mistakes" <<'SH'
 #!/usr/bin/env bash
+if [ -n "${FM_FAKE_NM_EXPECT_HOME:-}" ] && [ "${NM_HOME:-}" != "$FM_FAKE_NM_EXPECT_HOME" ]; then
+  exit 0
+fi
 case "${1:-}" in
   axi)
     shift
@@ -786,6 +792,55 @@ SH
     | grep -F 'links: "pr:https://github.com/example/repo/pull/7"' >/dev/null \
     || fail "a GitHub pull request no longer closed as the item's pr link"
   pass "teardown closes a landed Gerrit task with its change URL as a note and a GitHub task with --pr"
+}
+
+test_teardown_closes_a_gitlab_task_with_its_merge_request_url_as_a_note() {
+  local case_dir out real_tasks_axi url forge
+  local gitlab_url=https://gitlab.example.com/group/sub/repo/-/merge_requests/12
+  case_dir=$(make_case tasks-axi-close-gitlab)
+  write_meta "$case_dir" no-mistakes ship
+  printf 'pr=%s\n' "$gitlab_url" >> "$case_dir/state/task-x1.meta"
+  seed_backlog_in_flight "$case_dir"
+  # Pin the refusal tasks-axi applies to a --pr link that is neither a GitHub
+  # nor a Forgejo pull request, so this case keeps reproducing whatever the
+  # installed release accepts.
+  real_tasks_axi=$(command -v tasks-axi)
+  cat > "$case_dir/fakebin/tasks-axi" <<SH
+#!/usr/bin/env bash
+previous=
+for arg in "\$@"; do
+  if [ "\$previous" = --pr ] && ! [[ "\$arg" =~ ^https://[^/]+/[^/]+/[^/]+/pulls?/[0-9]+\$ ]]; then
+    echo "error: \"Task pr link must be a canonical pull request URL\""
+    exit 1
+  fi
+  previous=\$arg
+done
+exec "$real_tasks_axi" "\$@"
+SH
+  chmod +x "$case_dir/fakebin/tasks-axi"
+
+  out=$(run_teardown "$case_dir" 2>&1) || fail "teardown of a landed GitLab task failed: $out"
+  [ "$(backlog_row_state "$case_dir")" = "done" ] \
+    || fail "teardown left a landed GitLab task's backlog item at $(backlog_row_state "$case_dir"): $out"
+  tasks-axi show task-x1 --file "$case_dir/data/backlog.md" --full \
+    | grep -F "body: \"GitLab merge request $gitlab_url\"" >/dev/null \
+    || fail "closed GitLab backlog item did not record its merge request URL as a note"
+  assert_absent "$case_dir/state/task-x1.backlog-close" \
+    "a landed GitLab close left its pending-close record behind"
+
+  for url in https://github.com/example/repo/pull/7 https://forgejo.example.com/example/repo/pulls/7; do
+    forge=${url#https://}
+    case_dir=$(make_case "tasks-axi-close-pr-under-gitlab-refusal-${forge%%.*}")
+    write_meta "$case_dir" no-mistakes ship
+    printf 'pr=%s\n' "$url" >> "$case_dir/state/task-x1.meta"
+    seed_backlog_in_flight "$case_dir"
+    cp "$TMP_ROOT/tasks-axi-close-gitlab/fakebin/tasks-axi" "$case_dir/fakebin/tasks-axi"
+    out=$(run_teardown "$case_dir" 2>&1) || fail "teardown of a landed task with $url failed: $out"
+    tasks-axi show task-x1 --file "$case_dir/data/backlog.md" \
+      | grep -F "links: \"pr:$url\"" >/dev/null \
+      || fail "$url no longer closed as the item's pr link"
+  done
+  pass "teardown closes a landed GitLab task with its merge request URL as a note and GitHub and Forgejo tasks with --pr"
 }
 
 test_teardown_manual_backend_leaves_the_backlog_to_the_operator() {
@@ -3979,6 +4034,35 @@ test_parked_own_run_is_aborted_before_teardown() {
   pass "a task's own parked no-mistakes run is aborted, not orphaned, before the worker is removed"
 }
 
+# A parked run that lives in a per-workspace no-mistakes home is found and
+# aborted through the home's configured resolver when NM_HOME is unset.
+test_parked_run_in_a_resolved_workspace_home_is_aborted() {
+  local case_dir head rc=0
+  case_dir=$(make_case parked-run-resolved-home)
+  write_meta "$case_dir" no-mistakes ship
+  land_shippable_commit "$case_dir"
+  head=$(git -C "$case_dir/wt" rev-parse HEAD)
+  mkdir -p "$case_dir/workspace-nm"
+  cat > "$case_dir/resolver" <<SH
+#!/usr/bin/env bash
+[ "\$1" = '$case_dir/wt' ] && printf '%s\\n' '$case_dir/workspace-nm'
+SH
+  chmod +x "$case_dir/resolver"
+  printf '%s\n' "$case_dir/resolver" > "$case_dir/config/nm-home-resolver"
+
+  (
+    unset NM_HOME
+    FM_FAKE_NM_EXPECT_HOME="$case_dir/workspace-nm" \
+    FM_FAKE_AXI_STATUS="$(parked_axi_status_toon fm/task-x1 "$head")" \
+    FM_FAKE_NM_ABORT_LOG="$case_dir/nm-abort.log" \
+      run_teardown "$case_dir"
+  ) > "$case_dir/stdout" 2> "$case_dir/stderr" || rc=$?
+  expect_code 0 "$rc" "parked-run-resolved-home: teardown should still succeed"
+  assert_grep "abort --run 01RUN" "$case_dir/nm-abort.log" \
+    "parked-run-resolved-home: the parked run in the resolved workspace home was not aborted"
+  pass "a parked run in a resolved workspace no-mistakes home is aborted before the worker is removed"
+}
+
 # An abort can race a concurrent gate response: the run finishes with a
 # passing-but-not-clean outcome (an explicitly approved Test/CI exception)
 # instead of landing on `cancelled`. That is still a terminal, finished run,
@@ -5139,6 +5223,7 @@ test_retained_sources_still_reach_the_ordinary_refusal
 test_local_only_fork_remote_allows
 test_teardown_closes_the_backlog_item_itself
 test_teardown_closes_a_gerrit_task_with_its_change_url_as_a_note
+test_teardown_closes_a_gitlab_task_with_its_merge_request_url_as_a_note
 test_teardown_manual_backend_leaves_the_backlog_to_the_operator
 test_local_only_truly_unpushed_refuses
 test_local_only_merged_to_local_main_allows
@@ -5223,6 +5308,7 @@ test_teardown_records_the_task_pipeline_spend
 test_teardown_skips_pipeline_spend_when_disabled
 test_teardown_records_unavailable_spend_for_a_gone_worktree
 test_parked_own_run_is_aborted_before_teardown
+test_parked_run_in_a_resolved_workspace_home_is_aborted
 test_parked_own_run_concludes_on_passed_with_override_after_abort
 test_parked_own_run_concludes_on_passed_with_skips_after_abort
 test_parked_run_advanced_past_unfetched_head_is_still_aborted
