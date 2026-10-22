@@ -904,7 +904,7 @@ tests/fm-wake-queue.test.sh 165906
 tests/fm-watch-arm.test.sh 113076
 tests/fm-watch-checkpoint.test.sh 11234
 tests/fm-watch-recovery-loop.test.sh 59092
-tests/fm-watch-signal-grace.test.sh 3769
+tests/fm-watch-signal-grace.test.sh 49573
 tests/fm-watch-triage.test.sh 1074843
 tests/fm-watch-wedge-cap.test.sh 374225
 tests/fm-watch-wedge-cap-unconfigured-parity.test.sh 27763
