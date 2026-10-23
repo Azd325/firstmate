@@ -911,7 +911,8 @@ nm_effective_ci_step_status() {
 # still monitoring until merged or closed" (pinned from no-mistakes v1.84.0).
 # That no_ci sentence reads as no-checks, like the zero-checks marker: no check
 # ever verified the PR, so it stays working and never promotes a worker's own
-# "checks green" claim, even though its text says "all checks passed". Reads the ci step's log via `axi logs --full` and scans
+# "checks green" claim, even though its text says "all checks passed". Reads
+# the ci step's log via `axi logs --full` and scans
 # it for the MOST RECENT recognized marker (the log is append-only/chronological,
 # so the last match is current): green with nothing red after it means CI is
 # green right now, still only waiting on merge/close.
