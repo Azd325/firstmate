@@ -1,4 +1,13 @@
 ok - teardown leaves opencode's busy plugin in the returned pool worktree as on main
+ok - status archival is opt-in and preserves the complete log
+ok - forced secondmate retirement preserves two descendant levels and refuses linked child directories
+ok - local missing-status retirement stays lock-free without creating an archive
+ok - reused task IDs never overwrite archives and retention removes only old owned logs
+ok - archive sources and directories reject symlinks; pruning never follows children links
+ok - failed archive publication preserves presentation and watcher bookkeeping
+ok - cursor retirement failure removes its archive so retry publishes one history
+ok - archive publication and cold logs never re-wake or re-present
+ok - retention failures warn without aborting unrelated teardown
 ok - a missing teardown startup source refuses before cleanup
 ok - an unreadable teardown startup source refuses before cleanup
 ok - a missing adapter sibling refuses before cleanup
@@ -16,6 +25,8 @@ ok - no-mistakes worktree with HEAD on origin is torn down (no regression)
 ok - no-mistakes worktree with genuinely unlanded work is refused (safety preserved)
 ok - local-only worktree with unpushed work is torn down under --force (escape hatch)
 ok - fm-pr-check publishes the PR-ready line on a secondmate's parent channel once
+ok - fm-pr-check withholds the PR-ready line until checks are green when config/ready-after-green is present
+ok - fm-pr-check releases the PR-ready line on a checks-green report that carries surrounding text
 ok - a secondmate home's teardown delivers the child's final line or refuses until it can
 ok - teardown completes when an exact busy-state sidecar is already absent
 ok - teardown retires a polytoken task's generated worktree wiring on pool return
@@ -102,6 +113,7 @@ ok - teardown records the task's pipeline spend before removing its branch and r
 ok - teardown skips all pipeline-spend recording when the home has not opted in
 ok - teardown records unavailable pipeline spend for an owned ship task whose copy is gone
 ok - a task's own parked no-mistakes run is aborted, not orphaned, before the worker is removed
+ok - a parked run in a resolved workspace no-mistakes home is aborted before the worker is removed
 ok - a run that lands on passed-with-override after abort is still recognized as terminal
 ok - a run that lands on passed-with-skips after abort is still recognized as terminal
 ok - a parked run the pipeline advanced past the task copy is still concluded from the runs ledger, not orphaned
@@ -110,4 +122,31 @@ ok - a malformed ledger row never authorizes a parked-run abort
 ok - an impossible ledger date never authorizes a parked-run abort
 ok - a terminal status with a stale gate never reaches ledger cleanup
 ok - an advanced head present locally aborts through the strict rule alone - the ledger fallback stays dormant
-timeout 580 bash tests/fm-teardown.test.sh  186.63s user 267.22s system 77% cpu 9:41.95 total
+ok - an unresolvable active row with no same-branch anchor is never concluded (conservative refusal)
+ok - an ancestor-only anchor never binds an advanced parked run to this task
+ok - a terminal unfetched-head row is stale history and never concludes a run
+ok - a terminal newest row anchored at this worktree's head never authorizes an abort
+ok - a resolvable diverged newer same-branch row makes every older row stale history; no run is concluded
+ok - consecutive unresolvable rows are ambiguous and never conclude a run
+ok - a ledger-proven continuation is still left alone while the run is autonomously active
+ok - teardown refuses before reap or removal when a task-owned run remains parked
+ok - a different run cannot confirm the targeted abort
+ok - empty post-abort status is not accepted as confirmation
+ok - the CLI's exact run-not-found signal confirms completion
+ok - a parked run on another branch is never aborted by this task's teardown (ownership is precise)
+ok - a task-owned autonomous running step is left alone rather than aborted
+ok - a leaked descendant process rooted under the task's worktree is reaped by teardown, not left surviving
+ok - a leaked descendant process rooted under the task's per-task tasktmp is reaped by teardown too
+ok - foreign TTY shell survives and is reported while the task-owned child is reaped, and both are logged durably
+ok - an init-reparented child in the endpoint shell's session is reaped and logged
+ok - an unproven agent that ends at pane close does not keep the worktree
+ok - TERM-resistant task-owned processes are force-killed without being spared when the endpoint shell dies
+ok - missing lsof falls back to reaping the tmux pane process group
+ok - an erroring lsof scan refuses teardown and preserves the task
+ok - a reused pid with a different start time is never force-killed
+ok - an exec change preserves birth identity and the process is reaped
+ok - a process spawned during grace is reaped on a later pass
+ok - persistent leaked processes refuse teardown after bounded retries
+ok - a process exiting during identity lookup does not block teardown
+ok - the run abort and the leaked-process reap both complete before the destructive worktree return
+bash tests/fm-teardown.test.sh  246.17s user 344.41s system 81% cpu 12:06.49 total
