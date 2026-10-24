@@ -1,0 +1,22 @@
+== Scenario: noise-only (long run, wraps) -> one C-c then doorbell ==
+
+
+
+› [<65;161;44M[<65;162;44M[<65;163;44M[<65;164;44M[<65;165;44M[<65;166;44M[<65;167;44M[<65;168;44M[<65;169;44M[<65;161
+  0;44M[<65;1611;44M[<65;1612;44M
+
+  GPT-6.1-Sol low · ~/Projects/telegram-scanner/tmp/fmnoise-run.sh: line 9: fm_composer_codex_mouse_noise_only: command not found
+detected_noise_only=no
+ring_rc=0
+
+
+
+
+
+• Working (3s • esc to interrupt)
+
+
+› Ask Codex to do anything
+
+  GPT-6.1-Sol low · ~/Projects/telegram-scanner · Process task1 steering inbox
+  ? for shortcuts

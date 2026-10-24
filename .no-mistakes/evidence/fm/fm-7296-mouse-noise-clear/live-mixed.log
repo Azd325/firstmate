@@ -1,0 +1,11 @@
+== Scenario: mixed text, no C-c, skip ==
+
+
+› [<65;168;44M[<65;168;44Mhello
+
+  GPT-6.1-Sol low · ~/Projects/telegram-scannerring_rc=1
+
+
+› [<65;168;44M[<65;168;44Mhello
+
+  GPT-6.1-Sol low · ~/Projects/telegram-scanner
