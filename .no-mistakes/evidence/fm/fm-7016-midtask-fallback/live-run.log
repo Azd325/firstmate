@@ -1,0 +1,47 @@
+scenario 1 recorded
+guard status-text recorded
+guard unpinned recorded
+guard lower recorded
+guard no-candidate recorded
+guard finished recorded
+guard reports recorded
+guard repeat recorded
+guard pinned-fail recorded
+lab session fm-lab-fm-7016-midtask-79523-4459
+fm-herdr-lab: fleet-state tripwire requires exactly one running default session
+FAIL: lab provision failed; real relaunch was not driven
+STOP scenario 2 and 4: lab provision failed
+fm-herdr-lab: missing fleet-state tripwire for 'fm-lab-fm-7016-midtask-79523-4459'; refusing destructive calls
+teardown exit 1
+=== 004 retry 2026-10-25T16:31:54Z ===
+scratch-home=/private/var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T/fm-7016-live.kssWxa/userhome
+fm-home=/private/var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T/fm-7016-live.kssWxa/fm-home
+lab session fm-lab-fm-7016-midtask-30466-11916
+pane=w1:p1 workspace=w1 tab=w1:t1
+consider start
+consider rc=1
+FAIL: stdout missing relaunch outcome: 
+FAIL: relaunch exited 1
+FAIL: switch was not recorded
+FAIL: switch outcome was not recorded
+done fails=4
+=== 004 retry 2026-10-25T16:32:49Z ===
+scratch-home=/private/var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T/fm-7016-live.Rl2I1Z/userhome
+fm-home=/private/var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T/fm-7016-live.Rl2I1Z/fm-home
+lab session fm-lab-fm-7016-midtask-58404-15215
+pane=w1:p1 workspace=w1 tab=w1:t1
+consider start
+consider rc=1
+FAIL: stdout missing relaunch outcome: 
+FAIL: relaunch exited 1
+FAIL: switch was not recorded
+FAIL: switch outcome was not recorded
+done fails=4
+=== 004 retry 2026-10-25T16:33:16Z ===
+scratch-home=/private/var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T/fm-7016-live.fw0ZtZ/userhome
+fm-home=/private/var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T/fm-7016-live.fw0ZtZ/fm-home
+lab session fm-lab-fm-7016-midtask-67106-27002
+pane=w1:p1 workspace=w1 tab=w1:t1
+consider start
+consider rc=0
+done fails=0

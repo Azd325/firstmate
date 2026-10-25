@@ -1,0 +1,11 @@
+guards
+status-text rc=0 stdout=
+unpinned rc=0 stdout=
+lower rc=2 stdout=no eligible candidate
+no-candidate rc=2 stdout=no eligible candidate
+finished rc=0 stdout=
+reports first_rc=2 second_rc=1 second_stdout=
+reports third_rc=2 third_stdout=no eligible candidate
+repeat rc=0 stdout=
+pinned-real-control rc=1 stdout=
+pinned-retry rc=1 stdout=

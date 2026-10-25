@@ -1,0 +1,11 @@
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+●  WATCHER DOWN - SUPERVISION IS OFF
+●  1 task(s) in flight, but no watcher has a fresh beacon (last beat: never, grace 300s).
+●  Trust the emitted supervision protocol for this harness; do not use shell & for watcher repair.
+●  This is a supervision warning only; the guarded operation WILL still run.
+●  repair missing watcher supervision with bin/fm-watch-arm.sh as its own Grok tracked background task, never shell &.
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+warning: /private/var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T/fm-7016-live.fw0ZtZ/case/data/t7016/launch-brief.md records no ship branch; relaunching on the task's recorded branch live-proof
+warning: /private/var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T/fm-7016-live.fw0ZtZ/case/data/t7016/launch-brief.md records no delivery contract line (scaffolded before ship briefs recorded one); launching on the explicit --mode direct-PR - confirm its definition of done matches
+notice: t7016 ships mode=direct-PR while the standing posture for project is no-mistakes - less rigor than the captain's standing posture; proceed only on a current explicit captain instruction or an intake judgment you can state
+notice: t7016 ships branch=live-proof while project registers the ship-branch prefix 'fm/' (branch fm/t7016) - the task's branch and PR will read as firstmate-authored; proceed only on a current explicit captain instruction or an intake judgment you can state

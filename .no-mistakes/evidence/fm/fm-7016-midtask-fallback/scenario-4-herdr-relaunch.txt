@@ -1,0 +1,35 @@
+scenario=2 Worker hits a limit and is relaunched on the next eligible profile
+scenario-also=4 Real fm-control relaunch in a Herdr lab
+rc=0
+stdout<<EOF
+relaunched t7016 harness=codex from=claude model=gpt-5.5 effort=high backend=herdr endpoint=fm-lab-fm-7016-midtask-67106-27002:w1:p1 worktree=/private/var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T/fm-7016-live.fw0ZtZ/case/work
+relaunched: codex gpt-5.5 high
+EOF
+session=fm-lab-fm-7016-midtask-67106-27002
+pane=w1:p1
+workspace=w1
+tab=w1:t1
+note=unlanded
+porcelain<<EOF
+?? note.txt
+EOF
+worktree-line=worktree=/private/var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T/fm-7016-live.fw0ZtZ/case/work
+switch=midtask_switch={"from":{"harness":"claude","model":"claude-sonnet-5","effort":"high"},"to":{"harness":"codex","model":"gpt-5.5","effort":"high"},"reason":"usage-limit","at":1792945997}
+failed-switch=
+status=switched [at=1792945997]: claude claude-sonnet-5 high -> codex gpt-5.5 high because a usage limit stopped the worker
+control-log<<EOF
+10
+t7016
+relaunch
+--harness
+codex
+--model
+gpt-5.5
+--effort
+high
+--note
+The previous run stopped on a usage limit. Continue this task from the existing local copy, including uncommitted work.
+EOF
+helper-home=real
+worker-home=scratch
+fm-home=/private/var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T/fm-7016-live.fw0ZtZ/fm-home
