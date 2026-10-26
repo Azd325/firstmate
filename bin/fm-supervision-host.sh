@@ -400,7 +400,7 @@ activate() {
     case "$ledger" in *.pids|*.next) continue ;; esac
     [ -f "$ledger" ] && _fm_engine_reap "$ledger"
   done
-  rm -f "$STATE"/.supervision-host-arm.* "$STATE"/.supervision-host-descendants.* "$STATE"/.supervision-host-result.* \
+  rm -f "$STATE"/.supervision-host-arm.* "$STATE"/.supervision-host-warm.* "$STATE"/.supervision-host-descendants.* "$STATE"/.supervision-host-result.* \
     "$STATE"/.supervision-host-errors.* "$STATE"/.supervision-host-readback.* "$TURN_FILE" "$MIRROR_FEED" 2>/dev/null || true
   # The successor a pass-through left for main: the first cycle takes it over
   # while it still answers to its recorded identity, and its record goes only
@@ -583,17 +583,56 @@ warm_compact_tick() {
     verdict=$(fm_warm_compact_primary "$CONFIG" "$backend" "$target" "$PARK_ELAPSED" "$FM_WARM_COMPACT_TRANSCRIPT" 0)
     case "$verdict" in sent | failed) WARM_COMPACT_PRIMARY_DONE=1; log_line "warm-compact	primary	$verdict" ;; esac
   fi
-  if fm_supervision_host_config "$CONFIG" "$PRIMARY" && [ -n "$FM_SUPERVISION_ENGINE" ] \
-    && [ "$(sed -n 's/^engine=//p' "$ENGINE_RECORD" 2>/dev/null | head -n 1)" = "$FM_SUPERVISION_ENGINE" ]; then
+  if fm_supervision_host_config "$CONFIG" "$PRIMARY" && [ -n "$FM_SUPERVISION_ENGINE" ] && engine_record_resumable; then
     ended=$(numeric_or "$(sed -n 's/^ended=//p' "$ENGINE_RECORD" 2>/dev/null | head -n 1)" 0)
     [ "$ended" -gt 0 ] || return 0
     compacted=0
-    [ "$WARM_COMPACT_ENGINE_DONE" != "$ended" ] || compacted=1
-    verdict=$(fm_warm_compact_engine "$CONFIG" $(($(date +%s) - ended)) \
-      "$(sed -n 's/^session=//p' "$ENGINE_RECORD" 2>/dev/null | head -n 1)" \
-      "$FM_SUPERVISION_ENGINE" "$FM_SUPERVISION_ENGINE_MODEL" "$PROMPT_FILE" "$compacted")
-    case "$verdict" in compacted | failed) WARM_COMPACT_ENGINE_DONE=$ended; log_line "warm-compact	engine	$verdict" ;; esac
+    [ "$(sed -n 's/^compacted=//p' "$ENGINE_RECORD" 2>/dev/null | head -n 1)" != "$ended" ] || compacted=1
+    verdict=$(run_warm_compact_engine $(($(date +%s) - ended)) "$RECORD_SESSION" "$compacted")
+    case "$verdict" in
+      compacted | failed)
+        mark_engine_compacted "$ended"
+        log_line "warm-compact	engine	$verdict"
+        ;;
+    esac
   fi
+}
+
+# Run the engine compaction as a bounded background turn the cleanup can stop,
+# and abandon it the moment the arm closes or the park boundary arrives, so a
+# real wake never waits behind it. Prints the verdict, or nothing when abandoned.
+run_warm_compact_engine() {  # <idle-seconds> <session> <compacted 0|1>
+  local verdict_file
+  verdict_file=$(mktemp "$STATE/.supervision-host-warm.verdict.XXXXXX") || return 0
+  ENGINE_RUNNING=1
+  (
+    export FM_HOME STATE
+    [ -z "${FM_STATE_OVERRIDE:-}" ] || export FM_STATE_OVERRIDE
+    [ -z "${FM_CONFIG_OVERRIDE:-}" ] || export FM_CONFIG_OVERRIDE
+    fm_warm_compact_engine "$CONFIG" "$1" "$2" "$FM_SUPERVISION_ENGINE" "$FM_SUPERVISION_ENGINE_MODEL" \
+      "$PROMPT_FILE" "$3" "$ENGINE_PID_FILE" > "$verdict_file"
+  ) &
+  ENGINE_SUBSHELL=$!
+  while fm_pid_alive "$ENGINE_SUBSHELL"; do
+    if ! fm_pid_alive "$ARM_PID" || boundary_reached; then
+      stop_engine_turn
+      break
+    fi
+    sleep 0.5
+  done
+  wait "$ENGINE_SUBSHELL" 2>/dev/null || true
+  ENGINE_SUBSHELL=
+  ENGINE_RUNNING=0
+  rm -f "$ENGINE_PID_FILE"
+  cat "$verdict_file" 2>/dev/null || true
+  rm -f "$verdict_file"
+}
+
+mark_engine_compacted() {  # <ended>
+  local tmp
+  tmp=$(mktemp "$ENGINE_RECORD.tmp.XXXXXX") || return 0
+  { grep -v '^compacted=' "$ENGINE_RECORD"; printf 'compacted=%s\n' "$1"; } > "$tmp" 2>/dev/null \
+    && mv -f "$tmp" "$ENGINE_RECORD" || rm -f "$tmp"
 }
 
 # Wait for the current arm to close. Returns 0 with ARM_TEXT set,
@@ -834,23 +873,30 @@ leave_successor_for_main() {
 # The engine conversation for this turn: the recorded one while it belongs to
 # this main session and has turns left, otherwise a new one. Sets ENGINE_SESSION
 # and ENGINE_MODE (new|resume).
-choose_conversation() {
-  local key recorded_key recorded_session recorded_engine recorded_model turns
+# Succeed, setting RECORD_KEY, RECORD_SESSION and RECORD_TURNS, when the
+# recorded conversation is one the next turn resumes.
+engine_record_resumable() {
+  local key recorded_engine recorded_model
   key=$(fm_supervision_host_main_key "$STATE") || key=
-  recorded_key=$(sed -n 's/^key=//p' "$ENGINE_RECORD" 2>/dev/null | head -n 1)
-  recorded_session=$(sed -n 's/^session=//p' "$ENGINE_RECORD" 2>/dev/null | head -n 1)
+  RECORD_KEY=$key
+  RECORD_SESSION=$(sed -n 's/^session=//p' "$ENGINE_RECORD" 2>/dev/null | head -n 1)
   recorded_engine=$(sed -n 's/^engine=//p' "$ENGINE_RECORD" 2>/dev/null | head -n 1)
   recorded_model=$(sed -n 's/^model=//p' "$ENGINE_RECORD" 2>/dev/null | head -n 1)
-  turns=$(numeric_or "$(sed -n 's/^turns=//p' "$ENGINE_RECORD" 2>/dev/null | head -n 1)" 0)
-  if [ -n "$key" ] && [ -n "$recorded_session" ] && [ "$recorded_key" = "$key" ] \
+  RECORD_TURNS=$(numeric_or "$(sed -n 's/^turns=//p' "$ENGINE_RECORD" 2>/dev/null | head -n 1)" 0)
+  [ -n "$key" ] && [ -n "$RECORD_SESSION" ] \
+    && [ "$(sed -n 's/^key=//p' "$ENGINE_RECORD" 2>/dev/null | head -n 1)" = "$key" ] \
     && [ "$recorded_engine" = "$FM_SUPERVISION_ENGINE" ] \
     && [ "$recorded_model" = "$FM_SUPERVISION_ENGINE_MODEL" ] \
-    && [ "$turns" -lt "$ROTATE_TURNS" ] && [ -s "$PROMPT_FILE" ]; then
-    ENGINE_SESSION=$recorded_session
+    && [ "$RECORD_TURNS" -lt "$ROTATE_TURNS" ] && [ -s "$PROMPT_FILE" ]
+}
+
+choose_conversation() {
+  if engine_record_resumable; then
+    ENGINE_SESSION=$RECORD_SESSION
     ENGINE_MODE=resume
-    ENGINE_TURNS=$turns
+    ENGINE_TURNS=$RECORD_TURNS
     ENGINE_COST=$(sed -n 's/^conversation_cost=//p' "$ENGINE_RECORD" 2>/dev/null | head -n 1)
-    ENGINE_KEY=$key
+    ENGINE_KEY=$RECORD_KEY
     return 0
   fi
   ENGINE_SESSION=$(uuidgen 2>/dev/null | tr '[:upper:]' '[:lower:]')
@@ -861,7 +907,7 @@ choose_conversation() {
   ENGINE_MODE=new
   ENGINE_TURNS=0
   ENGINE_COST=0
-  ENGINE_KEY=$key
+  ENGINE_KEY=$RECORD_KEY
   local tmp
   tmp=$(mktemp "$PROMPT_FILE.tmp.XXXXXX") || return 1
   if ! "$SCRIPT_DIR/fm-branch-prompt.sh" > "$tmp" 2>/dev/null \

@@ -119,24 +119,24 @@ fm_warm_compact_engine_transcript() {
   return 1
 }
 
-# fm_warm_compact_engine <config-dir> <idle-seconds> <session> <engine> <model> <prompt-file> <compacted 0|1>
+# fm_warm_compact_engine <config-dir> <idle-seconds> <session> <engine> <model> <prompt-file> <compacted 0|1> [pid-file]
 # prints off|episode|young|small|compacted|failed. Needs
 # fm-supervision-engine-lib.sh sourced and STATE set.
 fm_warm_compact_engine() {
-  local config=$1 idle=$2 session=$3 engine=$4 model=$5 prompt=$6 compacted=$7
+  local config=$1 idle=$2 session=$3 engine=$4 model=$5 prompt=$6 compacted=$7 pid_file=${8:-}
   local transcript tokens verdict msg result errors rc
   transcript=$(fm_warm_compact_engine_transcript "$session") || transcript=
   tokens=$(fm_warm_compact_context_tokens "$transcript")
   verdict=$(fm_warm_compact_verdict "$config" "$idle" "$tokens" "$compacted")
   if [ "$verdict" != due ]; then printf '%s\n' "$verdict"; return 0; fi
   # shellcheck disable=SC2153 # STATE is the sourcing host's state directory.
-  msg=$(mktemp "$STATE/.warm-compact-msg.XXXXXX") || { printf 'failed\n'; return 0; }
-  result=$(mktemp "$STATE/.warm-compact-result.XXXXXX") || { rm -f "$msg"; printf 'failed\n'; return 0; }
-  errors=$(mktemp "$STATE/.warm-compact-err.XXXXXX") || { rm -f "$msg" "$result"; printf 'failed\n'; return 0; }
+  msg=$(mktemp "$STATE/.supervision-host-warm.msg.XXXXXX") || { printf 'failed\n'; return 0; }
+  result=$(mktemp "$STATE/.supervision-host-warm.result.XXXXXX") || { rm -f "$msg"; printf 'failed\n'; return 0; }
+  errors=$(mktemp "$STATE/.supervision-host-warm.err.XXXXXX") || { rm -f "$msg" "$result"; printf 'failed\n'; return 0; }
   printf '/compact' > "$msg"
   rc=0
   fm_supervision_engine_turn "$engine" "$model" "$prompt" "$msg" "$session" resume \
-    "${FM_WARM_COMPACT_ENGINE_TIMEOUT:-$FM_WARM_COMPACT_ENGINE_TIMEOUT_DEFAULT}" "$result" "$errors" || rc=$?
+    "${FM_WARM_COMPACT_ENGINE_TIMEOUT:-$FM_WARM_COMPACT_ENGINE_TIMEOUT_DEFAULT}" "$result" "$errors" "$pid_file" || rc=$?
   if [ "$rc" -eq 0 ] && [ "$(fm_supervision_engine_result "$engine" "$result" | sed -n 's/^error=\([01]\).*/\1/p')" = 0 ]; then
     printf 'compacted\n'
   else
