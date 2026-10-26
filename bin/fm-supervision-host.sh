@@ -633,8 +633,11 @@ run_warm_compact_engine() {  # <idle-seconds> <session> <compacted 0|1>
 mark_engine_compacted() {  # <ended>
   local tmp
   tmp=$(mktemp "$ENGINE_RECORD.tmp.XXXXXX") || return 0
-  { grep -v '^compacted=' "$ENGINE_RECORD"; printf 'compacted=%s\n' "$1"; } > "$tmp" 2>/dev/null \
-    && mv -f "$tmp" "$ENGINE_RECORD" || rm -f "$tmp"
+  if { grep -v '^compacted=' "$ENGINE_RECORD"; printf 'compacted=%s\n' "$1"; } > "$tmp" 2>/dev/null; then
+    mv -f "$tmp" "$ENGINE_RECORD" || rm -f "$tmp"
+  else
+    rm -f "$tmp"
+  fi
 }
 
 # Wait for the current arm to close. Returns 0 with ARM_TEXT set,
