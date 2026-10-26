@@ -204,6 +204,12 @@ CONFIG="${FM_CONFIG_OVERRIDE:-$FM_HOME/config}"
 . "$SCRIPT_DIR/fm-supervision-engine-lib.sh"
 # shellcheck source=bin/fm-afk-contract.sh
 . "$SCRIPT_DIR/fm-afk-contract.sh"
+# shellcheck source=bin/fm-backend.sh
+. "$SCRIPT_DIR/fm-backend.sh"
+# shellcheck source=bin/fm-supervisor-target-lib.sh
+. "$SCRIPT_DIR/fm-supervisor-target-lib.sh"
+# shellcheck source=bin/fm-warm-compact-lib.sh
+. "$SCRIPT_DIR/fm-warm-compact-lib.sh"
 
 FIRST_ARM_RESTART=0
 case "${1:-}" in
@@ -232,6 +238,7 @@ TURN_TIMEOUT=$(numeric_or "${FM_SUPERVISION_HOST_TURN_TIMEOUT:-}" 1200)
 ROTATE_TURNS=$(numeric_or "${FM_SUPERVISION_HOST_ROTATE_TURNS:-}" 20)
 READY_TIMEOUT=$(numeric_or "${FM_SUPERVISION_HOST_READY_TIMEOUT:-}" 25)
 POLL=$(numeric_or "${FM_SUPERVISION_HOST_POLL:-}" 1)
+WARM_COMPACT_TICK=$(numeric_or "${FM_WARM_COMPACT_TICK:-}" 60)
 COOLDOWN=$FM_SUPERVISION_HOST_COOLDOWN
 COOLDOWN_MAX=3600
 AUTOARM_GEN=${FM_SUPERVISION_HOST_AUTOARM_GEN:-}
@@ -553,6 +560,42 @@ stream_ready_line() {
   READY_PENDING=0
 }
 
+# Warm-cache compaction (bin/fm-warm-compact-lib.sh owns the gate and the
+# guards). The park is the primary's idle episode: the owner starts the host at
+# the primary's turn end and the host exits when main is needed. The engine
+# conversation's episode is the time since its last handled turn. Each is
+# compacted at most once per episode, and neither result reaches the close.
+WARM_COMPACT_LAST_TICK=-1
+WARM_COMPACT_PRIMARY_DONE=0
+WARM_COMPACT_ENGINE_DONE=
+
+warm_compact_tick() {
+  local backend target verdict ended compacted
+  [ -f "$CONFIG/warm-compact" ] || return 0
+  park_elapsed
+  if [ "$WARM_COMPACT_LAST_TICK" -ge 0 ] && [ $((PARK_ELAPSED - WARM_COMPACT_LAST_TICK)) -lt "$WARM_COMPACT_TICK" ]; then
+    return 0
+  fi
+  WARM_COMPACT_LAST_TICK=$PARK_ELAPSED
+  turn_crosses_boundary && return 0
+  if [ "$PRIMARY" = claude ] && [ "$WARM_COMPACT_PRIMARY_DONE" -eq 0 ] && [ -n "${FM_WARM_COMPACT_TRANSCRIPT:-}" ] \
+    && target=$(discover_supervisor_target) && backend=$(discover_supervisor_backend); then
+    verdict=$(fm_warm_compact_primary "$CONFIG" "$backend" "$target" "$PARK_ELAPSED" "$FM_WARM_COMPACT_TRANSCRIPT" 0)
+    case "$verdict" in sent | failed) WARM_COMPACT_PRIMARY_DONE=1; log_line "warm-compact	primary	$verdict" ;; esac
+  fi
+  if fm_supervision_host_config "$CONFIG" "$PRIMARY" && [ -n "$FM_SUPERVISION_ENGINE" ] \
+    && [ "$(sed -n 's/^engine=//p' "$ENGINE_RECORD" 2>/dev/null | head -n 1)" = "$FM_SUPERVISION_ENGINE" ]; then
+    ended=$(numeric_or "$(sed -n 's/^ended=//p' "$ENGINE_RECORD" 2>/dev/null | head -n 1)" 0)
+    [ "$ended" -gt 0 ] || return 0
+    compacted=0
+    [ "$WARM_COMPACT_ENGINE_DONE" != "$ended" ] || compacted=1
+    verdict=$(fm_warm_compact_engine "$CONFIG" $(($(date +%s) - ended)) \
+      "$(sed -n 's/^session=//p' "$ENGINE_RECORD" 2>/dev/null | head -n 1)" \
+      "$FM_SUPERVISION_ENGINE" "$FM_SUPERVISION_ENGINE_MODEL" "$PROMPT_FILE" "$compacted")
+    case "$verdict" in compacted | failed) WARM_COMPACT_ENGINE_DONE=$ended; log_line "warm-compact	engine	$verdict" ;; esac
+  fi
+}
+
 # Wait for the current arm to close. Returns 0 with ARM_TEXT set,
 # or 1 when the park boundary arrives first.
 await_close() {
@@ -561,6 +604,7 @@ await_close() {
     refresh_process "$ARM_PID"
     [ "$READY_PENDING" -eq 0 ] || stream_ready_line
     boundary_reached && return 1
+    warm_compact_tick
     # Probe the arm's exit twice a second between POLL-cadence checks, without
     # changing the outer identity refresh, readiness, or boundary cadence.
     i=$((POLL * 2))
@@ -832,8 +876,8 @@ choose_conversation() {
 write_engine_record() {  # <turns> <conversation-cost>
   local tmp
   tmp=$(mktemp "$ENGINE_RECORD.tmp.XXXXXX") || return 1
-  printf 'engine=%s\nmodel=%s\nsession=%s\nkey=%s\nturns=%s\nconversation_cost=%s\n' \
-    "$FM_SUPERVISION_ENGINE" "$FM_SUPERVISION_ENGINE_MODEL" "$ENGINE_SESSION" "$ENGINE_KEY" "$1" "$2" > "$tmp" \
+  printf 'engine=%s\nmodel=%s\nsession=%s\nkey=%s\nturns=%s\nconversation_cost=%s\nended=%s\n' \
+    "$FM_SUPERVISION_ENGINE" "$FM_SUPERVISION_ENGINE_MODEL" "$ENGINE_SESSION" "$ENGINE_KEY" "$1" "$2" "$(date +%s)" > "$tmp" \
     && mv -f "$tmp" "$ENGINE_RECORD"
 }
 
