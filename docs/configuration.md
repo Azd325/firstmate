@@ -387,7 +387,11 @@ A session is compacted when all of these hold:
 - The home opted in.
 - The session has been idle for `idle-seconds`: the primary since its turn ended, the engine conversation since its last handled turn.
 - Its context is at least `min-context-tokens`.
-- It was not already compacted in this idle episode, so each session is compacted at most once per episode.
+- It was not already compacted in this idle episode.
+  The host remembers a primary compaction for one park.
+  It records an engine compaction in the engine record, so a later host does not repeat it.
+- For the engine conversation, the next turn would resume it: the same engine, model, and prompt key, and below the rotation limit.
+  An abandoned compaction is not recorded, so a later check retries it.
 - For the primary, the agent reads idle and the composer reads provably empty.
   A busy agent, a non-empty composer, or an unproven state defers the compaction; nothing is typed.
 

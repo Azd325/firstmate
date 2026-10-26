@@ -82,7 +82,10 @@ lab() { "$LAB_HELPER" run "$SESSION" "$@"; }
 screen() { lab pane read "$PANE" --source visible 2>/dev/null; }
 
 transcript() {
-  find "$PROJECTS/$(printf '%s' "$FM" | sed 's/[^A-Za-z0-9]/-/g')" -maxdepth 1 -name '*.jsonl' -print 2>/dev/null | head -n 1
+  local sid
+  sid=$(lab pane list 2>/dev/null | jq -r --arg pane "$PANE" '.result.panes[]? | select(.pane_id == $pane) | .agent_session.value // empty' 2>/dev/null | head -n 1)
+  [ -n "$sid" ] || return 0
+  find "$PROJECTS/$(printf '%s' "$FM" | sed 's/[^A-Za-z0-9]/-/g')" -maxdepth 1 -name "$sid.jsonl" -print 2>/dev/null | head -n 1
 }
 compact_boundaries() {
   local t
