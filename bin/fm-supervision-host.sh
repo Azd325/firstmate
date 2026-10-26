@@ -567,7 +567,7 @@ stream_ready_line() {
 # compacted at most once per episode, and neither result reaches the close.
 WARM_COMPACT_LAST_TICK=-1
 WARM_COMPACT_PRIMARY_DONE=0
-WARM_COMPACT_ENGINE_DONE=
+WARM_COMPACT_VERDICT=
 
 warm_compact_tick() {
   local backend target verdict ended compacted
@@ -588,11 +588,11 @@ warm_compact_tick() {
     [ "$ended" -gt 0 ] || return 0
     compacted=0
     [ "$(sed -n 's/^compacted=//p' "$ENGINE_RECORD" 2>/dev/null | head -n 1)" != "$ended" ] || compacted=1
-    verdict=$(run_warm_compact_engine $(($(date +%s) - ended)) "$RECORD_SESSION" "$compacted")
-    case "$verdict" in
+    run_warm_compact_engine $(($(date +%s) - ended)) "$RECORD_SESSION" "$compacted"
+    case "$WARM_COMPACT_VERDICT" in
       compacted | failed)
         mark_engine_compacted "$ended"
-        log_line "warm-compact	engine	$verdict"
+        log_line "warm-compact	engine	$WARM_COMPACT_VERDICT"
         ;;
     esac
   fi
@@ -600,9 +600,10 @@ warm_compact_tick() {
 
 # Run the engine compaction as a bounded background turn the cleanup can stop,
 # and abandon it the moment the arm closes or the park boundary arrives, so a
-# real wake never waits behind it. Prints the verdict, or nothing when abandoned.
+# real wake never waits behind it. Sets WARM_COMPACT_VERDICT, empty when abandoned.
 run_warm_compact_engine() {  # <idle-seconds> <session> <compacted 0|1>
-  local verdict_file
+  local verdict_file abandoned=0
+  WARM_COMPACT_VERDICT=
   verdict_file=$(mktemp "$STATE/.supervision-host-warm.verdict.XXXXXX") || return 0
   ENGINE_RUNNING=1
   (
@@ -615,6 +616,7 @@ run_warm_compact_engine() {  # <idle-seconds> <session> <compacted 0|1>
   ENGINE_SUBSHELL=$!
   while fm_pid_alive "$ENGINE_SUBSHELL"; do
     if ! fm_pid_alive "$ARM_PID" || boundary_reached; then
+      abandoned=1
       stop_engine_turn
       break
     fi
@@ -624,7 +626,7 @@ run_warm_compact_engine() {  # <idle-seconds> <session> <compacted 0|1>
   ENGINE_SUBSHELL=
   ENGINE_RUNNING=0
   rm -f "$ENGINE_PID_FILE"
-  cat "$verdict_file" 2>/dev/null || true
+  [ "$abandoned" -eq 1 ] || WARM_COMPACT_VERDICT=$(cat "$verdict_file" 2>/dev/null || true)
   rm -f "$verdict_file"
 }
 
