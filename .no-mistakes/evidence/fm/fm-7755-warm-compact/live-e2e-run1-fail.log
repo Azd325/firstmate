@@ -1,0 +1,46 @@
+# 19:49:06 primary idle in Herdr pane w1:p1 (2.1.310 (Claude Code), herdr 0.9.5, model haiku); host pid 35616
+# 19:49:43 engine conversation f031f6e9-28b3-4379-9789-76cdb28c2d02 handled one away wake
+# 19:50:06 primary: warm-compact	primary	sent
+# 19:51:03 engine: warm-compact	engine	compacted
+# 19:51:03 primary transcript compaction boundaries: 1
+# 19:51:23 engine context after compaction: 18889 tokens
+not ok - the compacted primary never drained and acknowledged the pending wake
+{"id":"cli:pane:list","result":{"panes":[{"agent":"claude","agent_session":{"agent":"claude","kind":"id","source":"herdr:claude","value":"f85e2c99-0683-4575-93f4-d82f6c073ba4"},"agent_status":"idle","cwd":"/private/var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T/fm-warm-compact-live.OJEsuH/fm","focused":true,"foreground_cwd":"/private/var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T/fm-warm-compact-live.OJEsuH/fm","pane_id":"w1:p1","revision":2,"scroll":{"max_offset_from_bottom":0,"offset_from_bottom":0,"viewport_rows":40},"tab_id":"w1:t1","terminal_id":"term_65ec2c7bd42d01","terminal_title":"✳ Firstmate wake drain test lab","terminal_title_stripped":"Firstmate wake drain test lab","workspa
+--- host log
+1793040545	start	gen=host-35616-1793040544	primary=claude
+1793040583	handled	turn=host-35616-1793040544.1	posture=away	rc=0	reports=1	error=0 cost=0.038199 conversation_cost=0.038199 input=16 cache_read=141035 cache_write=3086 output=1172 turns=8	signal: /private/var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T/fm-warm-compact-live.OJEsuH/fm/state/demo.status
+1793040606	warm-compact	primary	sent
+1793040663	warm-compact	engine	compacted
+1793040686	pass-through	attended	main-only	signal: /private/var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T/fm-warm-compact-live.OJEsuH/fm/state/demo.status
+1793040697	start	gen=host-92924-1793040697	primary=claude
+1793040697	take-over	arm=81832
+1793040762	warm-compact	primary	sent
+--- queue
+
+--- screen
+
+✻ Sautéed for 6s · done 7:49 PM
+
+❯ /compact
+  ⎿  Compacted (ctrl+o to see full summary)
+  ⎿  Referenced file AGENTS.md
+
+⏺ Stop hook feedback
+
+  Thought for 3s, ran 2 shell commands
+
+⏺ ACKED
+
+✻ Churned for 9s · done 7:51 PM
+
+❯ /compact
+  ⎿  Compacted (ctrl+o to see full summary)
+  ⎿  Referenced file AGENTS.md
+
+
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Haiku 5.5 | ctx: 0% used
+  ⏵⏵ bypass permissions on (shift+tab to cycle) · ← 1 agent
+exit=1

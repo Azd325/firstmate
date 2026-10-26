@@ -1,0 +1,5 @@
+ok - host: the dialog mirror, its feed, and the wake file are owner-only
+ok - host: an idle engine conversation is compacted once across hosts
+ok - host: a conversation the next turn would not resume is not compacted
+ok - host: a compaction abandoned at the park boundary is not marked done
+exit=0
