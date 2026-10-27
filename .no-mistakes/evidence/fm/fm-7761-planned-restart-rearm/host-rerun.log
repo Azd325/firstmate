@@ -1,0 +1,4 @@
+ok - host: each wake carries the captain's dialog since the last wake, without operational input
+ok - host: the dialog mirror, its feed, and the wake file are owner-only
+ok - host: the park boundary hands an acknowledged episode back as announced
+exit 0
