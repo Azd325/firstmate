@@ -3507,7 +3507,7 @@ pr_poll_publish_release() {
 }
 
 watcher_cleanup() {
-  local cleanup_status=0 owns_lock=0 transition=release-lock publish_source=watcher hold_i
+  local cleanup_status=0 owns_lock=0 transition=release-lock publish_source=watcher
   pr_poll_publish_release || cleanup_status=1
   pr_poll_control_release || cleanup_status=1
   if [ "$(cat "$WATCH_LOCK/pid" 2>/dev/null || true)" = "${WATCHER_PID:-}" ]; then
@@ -3519,14 +3519,6 @@ watcher_cleanup() {
     if [ "${WATCHER_RECOVERY_PENDING:-0}" -eq 1 ] \
       && [ "${FM_WATCH_DELIVERED_REASON:-}" = "check: rearm-resurface" ]; then
       transition=release-lock-existing
-    fi
-    # Tests set this path so they can acknowledge before the close publishes.
-    if [ -n "${FM_WATCH_CLEANUP_HOLD:-}" ]; then
-      hold_i=0
-      while [ ! -e "$FM_WATCH_CLEANUP_HOLD" ] && [ "$hold_i" -lt 600 ]; do
-        sleep 0.05
-        hold_i=$((hold_i + 1))
-      done
     fi
   fi
   # Quietly: a stop usually lands inside the waited event wait, and bash would
