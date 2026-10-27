@@ -8,8 +8,8 @@ for v in $(env | sed -n "s/^\(FM_[A-Za-z0-9_]*\|HERDR_[A-Za-z0-9_]*\)=.*/\1/p");
 
 LIVE=/private/tmp/claude-501/-Users-timkleinschmidt--treehouse-firstmate-b8697d-12-firstmate/bbf1f9eb-903e-4b8b-8942-9fe0a19f570e/scratchpad/live
 GATE_REPO=~/.no-mistakes/repos/0415ddf1f9d0.git
-CODE_HEAD=7ccfa30199ae3fc4d6e4c74f7df39cd5fc99f632
-RUN=01M5WNSM7YH06MPC4GM5KM0V0M
+CODE_HEAD=74cc13a4d7cb66006513b4d56ebae94788f9c0fe
+RUN=01M5XW0X6G6SCDRRYH6VMBBSMA
 WT_GATE=~/.treehouse/firstmate-b8697d/12/firstmate
 WT_DONE=~/.treehouse/firstmate-b8697d/4/firstmate
 OUT=${1:?evidence file}
@@ -28,7 +28,7 @@ export HOME=$LIVE/userhome XDG_CONFIG_HOME=$LIVE/userhome/.config XDG_CACHE_HOME
 cat > "$LIVE/bin/tmux" <<'SH'
 #!/usr/bin/env bash
 case "${1:-}" in
-  list-windows) printf '%s\n' fm-gate-done fm-gate-paused fm-finished-done; exit 0 ;;
+  list-windows) printf '%s\n' fm-gate-done fm-gate-paused fm-finished-done fm-gate-working fm-otherpr-done; exit 0 ;;
   capture-pane) printf 'idle: worker finished its turn\n'; exit 0 ;;
   display-message) printf 'zsh\n'; exit 0 ;;
 esac
@@ -41,14 +41,17 @@ SH
 chmod +x "$LIVE/bin/tmux" "$LIVE/failbin/no-mistakes"
 export PATH=$LIVE/bin:$PATH
 
-write_task() {  # <id> <worktree> <status-line>
+write_task() {  # <id> <worktree> <status-line> [pr-url]
   printf 'window=live:%s\nworktree=%s\nkind=ship\nharness=claude\nbackend=tmux\n' "fm-$1" "$2" > "$STATE/$1.meta"
+  [ -z "${4:-}" ] || printf 'pr=%s\n' "$4" >> "$STATE/$1.meta"
   printf '%s\n' "$3" > "$STATE/$1.status"
   bash -c '. "$1"; fm_wake_status_mark_current "$2" "$3"' _ "$CODE/bin/fm-wake-lib.sh" "$STATE" "$STATE/$1.status"
 }
 write_task gate-done "$WT_GATE" "done [at=$(date +%s)]: PR checks green"
 write_task gate-paused "$WT_GATE" "paused [at=$(date +%s)]: waiting on the maintainer until 2099-01-01T00:00Z"
 write_task finished-done "$WT_DONE" "done [at=$(date +%s)]: PR checks green"
+write_task gate-working "$WT_GATE" "working [at=$(date +%s)]: addressing review feedback"
+write_task otherpr-done "$WT_GATE" "done [at=$(date +%s)]: PR checks green" https://github.com/kunchenguid/firstmate/pull/1
 
 watch_once() {  # <label> <seconds> [extra PATH prefix]
   local label=$1 secs=$2 prefix=${3:-} rc
@@ -91,8 +94,11 @@ mark_panes_surfaced() {
   echo "## real no-mistakes view of the run"
   ( cd "$WT_GATE" && no-mistakes axi status 2>/dev/null | grep -E '^  (id|status|awaiting_agent|head):|^gate:|^  step:|^  status:' )
   echo
+  echo "## run branch custody (decides which attribution rule binds)"
+  ( cd "$WT_GATE" && no-mistakes axi status 2>/dev/null | grep -E "^  state:|^  pr:|^  pr_state:" )
+  echo
   echo "## real fm-crew-state.sh reads (FM_CREW_STATE_NO_FORGE=1, as the check calls it)"
-  for t in gate-done gate-paused finished-done; do
+  for t in gate-done gate-paused finished-done gate-working otherpr-done; do
     printf '%s: %s\n' "$t" "$(FM_CREW_STATE_NO_FORGE=1 bash "$CODE/bin/fm-crew-state.sh" "$t" 2>&1)"
   done
   echo

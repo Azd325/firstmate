@@ -1,90 +1,108 @@
-# live gate-wake check - 2026-10-26T18:36:12Z
-code under test: 7ccfa30199ae3fc4d6e4c74f7df39cd5fc99f632 (exported from the run's gate repo)
-run under test: 01M5WNSM7YH06MPC4GM5KM0V0M
+# live gate-wake check - 2026-10-27T05:27:15Z
+code under test: 74cc13a4d7cb66006513b4d56ebae94788f9c0fe (exported from the run's gate repo)
+run under test: 01M5XW0X6G6SCDRRYH6VMBBSMA
 
 ## real no-mistakes view of the run
-  id: "01M5WNSM7YH06MPC4GM5KM0V0M"
+  id: "01M5XW0X6G6SCDRRYH6VMBBSMA"
   status: running
-  awaiting_agent: parked 5m46s
-  head: 7ccfa301
+  awaiting_agent: parked 3m26s
+  head: 74cc13a4
 gate:
   step: test
   status: awaiting_approval
 
+## run branch custody (decides which attribution rule binds)
+  state: pipeline_owned
+  pr_state: none
+
 ## real fm-crew-state.sh reads (FM_CREW_STATE_NO_FORGE=1, as the check calls it)
-gate-done: state: parked · source: run-step · parked at test: 1 finding(s) · ask-user: authority decision · run: 01M5WNSM7YH06MPC4GM5KM0V0M
-gate-paused: state: parked · source: run-step · parked at test: 1 finding(s) · ask-user: authority decision · run: 01M5WNSM7YH06MPC4GM5KM0V0M
+gate-done: state: parked · source: run-step · parked at test: 1 finding(s) · ask-user: authority decision · run: 01M5XW0X6G6SCDRRYH6VMBBSMA
+gate-paused: state: parked · source: run-step · parked at test: 1 finding(s) · ask-user: authority decision · run: 01M5XW0X6G6SCDRRYH6VMBBSMA
 finished-done: state: done · source: run-step · run passed: PR state unknown (forge read skipped) · run: 01M5Q8ESQ8HNCFGV8BRXK7B9R8
+gate-working: state: parked · source: run-step · parked at test: 1 finding(s) · ask-user: authority decision · run: 01M5XW0X6G6SCDRRYH6VMBBSMA
+otherpr-done: state: parked · source: run-step · parked at test: 1 finding(s) · ask-user: authority decision · run: 01M5XW0X6G6SCDRRYH6VMBBSMA
 
 ## 1. first watcher run: one wake naming the gate
 ### watcher run: first
 exit: 0 (124 = still watching when the bound ended, i.e. no wake)
 printed reasons:
-  check: validation gate after done: gate-done parked at test: 1 finding(s) · ask-user: authority decision · run: 01M5WNSM7YH06MPC4GM5KM0V0M
+  check: validation gate after done: gate-done parked at test: 1 finding(s) · ask-user: authority decision · run: 01M5XW0X6G6SCDRRYH6VMBBSMA
 gate markers:
-  .wait-gate-live_fm-gate-done: state: parked · source: run-step · parked at test: 1 finding(s) · ask-user: authority decision · run: 01M5WNSM7YH06MPC4GM5KM0V0M
+  .wait-gate-live_fm-gate-done: state: parked · source: run-step · parked at test: 1 finding(s) · ask-user: authority decision · run: 01M5XW0X6G6SCDRRYH6VMBBSMA
 current-state reads taken this run (recheck markers written):
   .wait-gate-checked-live_fm-finished-done
   .wait-gate-checked-live_fm-gate-done
 queued rows drained:
-  1793039779	1	check	wait-gate-gate-done	check: validation gate after done: gate-done parked at test: 1 finding(s) · ask-user: authority decision · run: 01M5WNSM7YH06MPC4GM5KM0V0M
+  1793078844	1	check	wait-gate-gate-done	check: validation gate after done: gate-done parked at test: 1 finding(s) · ask-user: authority decision · run: 01M5XW0X6G6SCDRRYH6VMBBSMA
 
 ## 2. second watcher run: the other parked task's own first wake
 ### watcher run: second
 exit: 0 (124 = still watching when the bound ended, i.e. no wake)
 printed reasons:
-  check: validation gate after paused: gate-paused parked at test: 1 finding(s) · ask-user: authority decision · run: 01M5WNSM7YH06MPC4GM5KM0V0M
+  check: validation gate after paused: gate-paused parked at test: 1 finding(s) · ask-user: authority decision · run: 01M5XW0X6G6SCDRRYH6VMBBSMA
 gate markers:
-  .wait-gate-live_fm-gate-done: state: parked · source: run-step · parked at test: 1 finding(s) · ask-user: authority decision · run: 01M5WNSM7YH06MPC4GM5KM0V0M
-  .wait-gate-live_fm-gate-paused: state: parked · source: run-step · parked at test: 1 finding(s) · ask-user: authority decision · run: 01M5WNSM7YH06MPC4GM5KM0V0M
+  .wait-gate-live_fm-gate-done: state: parked · source: run-step · parked at test: 1 finding(s) · ask-user: authority decision · run: 01M5XW0X6G6SCDRRYH6VMBBSMA
+  .wait-gate-live_fm-gate-paused: state: parked · source: run-step · parked at test: 1 finding(s) · ask-user: authority decision · run: 01M5XW0X6G6SCDRRYH6VMBBSMA
 current-state reads taken this run (recheck markers written):
   .wait-gate-checked-live_fm-finished-done
   .wait-gate-checked-live_fm-gate-done
   .wait-gate-checked-live_fm-gate-paused
 queued rows drained:
-  1793039786	2	check	wait-gate-gate-paused	check: validation gate after paused: gate-paused parked at test: 1 finding(s) · ask-user: authority decision · run: 01M5WNSM7YH06MPC4GM5KM0V0M
+  1793078851	2	check	wait-gate-gate-paused	check: validation gate after paused: gate-paused parked at test: 1 finding(s) · ask-user: authority decision · run: 01M5XW0X6G6SCDRRYH6VMBBSMA
 
 pane stale alarms marked surfaced: .stale-live_fm-finished-done .stale-live_fm-gate-done 
 ## 3. forced recheck: same parked gates, no repeat wake
 ### watcher run: repeat
-exit: 124 (124 = still watching when the bound ended, i.e. no wake)
+exit: 0 (124 = still watching when the bound ended, i.e. no wake)
 printed reasons:
+  check: validation gate after done: otherpr-done parked at test: 1 finding(s) · ask-user: authority decision · run: 01M5XW0X6G6SCDRRYH6VMBBSMA
 gate markers:
-  .wait-gate-live_fm-gate-done: state: parked · source: run-step · parked at test: 1 finding(s) · ask-user: authority decision · run: 01M5WNSM7YH06MPC4GM5KM0V0M
-  .wait-gate-live_fm-gate-paused: state: parked · source: run-step · parked at test: 1 finding(s) · ask-user: authority decision · run: 01M5WNSM7YH06MPC4GM5KM0V0M
+  .wait-gate-live_fm-gate-done: state: parked · source: run-step · parked at test: 1 finding(s) · ask-user: authority decision · run: 01M5XW0X6G6SCDRRYH6VMBBSMA
+  .wait-gate-live_fm-gate-paused: state: parked · source: run-step · parked at test: 1 finding(s) · ask-user: authority decision · run: 01M5XW0X6G6SCDRRYH6VMBBSMA
+  .wait-gate-live_fm-otherpr-done: state: parked · source: run-step · parked at test: 1 finding(s) · ask-user: authority decision · run: 01M5XW0X6G6SCDRRYH6VMBBSMA
 current-state reads taken this run (recheck markers written):
   .wait-gate-checked-live_fm-finished-done
   .wait-gate-checked-live_fm-gate-done
   .wait-gate-checked-live_fm-gate-paused
+  .wait-gate-checked-live_fm-otherpr-done
 queued rows drained:
+  1793078860	3	check	wait-gate-otherpr-done	check: validation gate after done: otherpr-done parked at test: 1 finding(s) · ask-user: authority decision · run: 01M5XW0X6G6SCDRRYH6VMBBSMA
 
 ## 4. unknown read (no-mistakes made to fail for this run only)
 ### watcher run: unknown-read
-exit: 124 (124 = still watching when the bound ended, i.e. no wake)
+exit: 0 (124 = still watching when the bound ended, i.e. no wake)
 printed reasons:
+  stale: live:fm-gate-working
 gate markers:
-  .wait-gate-live_fm-gate-done: state: parked · source: run-step · parked at test: 1 finding(s) · ask-user: authority decision · run: 01M5WNSM7YH06MPC4GM5KM0V0M
-  .wait-gate-live_fm-gate-paused: state: parked · source: run-step · parked at test: 1 finding(s) · ask-user: authority decision · run: 01M5WNSM7YH06MPC4GM5KM0V0M
+  .wait-gate-live_fm-gate-done: state: parked · source: run-step · parked at test: 1 finding(s) · ask-user: authority decision · run: 01M5XW0X6G6SCDRRYH6VMBBSMA
+  .wait-gate-live_fm-gate-paused: state: parked · source: run-step · parked at test: 1 finding(s) · ask-user: authority decision · run: 01M5XW0X6G6SCDRRYH6VMBBSMA
+  .wait-gate-live_fm-otherpr-done: state: parked · source: run-step · parked at test: 1 finding(s) · ask-user: authority decision · run: 01M5XW0X6G6SCDRRYH6VMBBSMA
 current-state reads taken this run (recheck markers written):
   .wait-gate-checked-live_fm-finished-done
   .wait-gate-checked-live_fm-gate-done
   .wait-gate-checked-live_fm-gate-paused
+  .wait-gate-checked-live_fm-otherpr-done
 queued rows drained:
+  1793078870	4	stale	live:fm-gate-working	stale: live:fm-gate-working
 crew-state during the failure: state: unknown · source: pane · harness state unavailable (unknown missing)
 
 ## 5. forced recheck after the unknown read: still no repeat wake
 ### watcher run: after-unknown
-exit: 124 (124 = still watching when the bound ended, i.e. no wake)
+exit: 0 (124 = still watching when the bound ended, i.e. no wake)
 printed reasons:
+  stale: live:fm-otherpr-done
 gate markers:
-  .wait-gate-live_fm-gate-done: state: parked · source: run-step · parked at test: 1 finding(s) · ask-user: authority decision · run: 01M5WNSM7YH06MPC4GM5KM0V0M
-  .wait-gate-live_fm-gate-paused: state: parked · source: run-step · parked at test: 1 finding(s) · ask-user: authority decision · run: 01M5WNSM7YH06MPC4GM5KM0V0M
+  .wait-gate-live_fm-gate-done: state: parked · source: run-step · parked at test: 1 finding(s) · ask-user: authority decision · run: 01M5XW0X6G6SCDRRYH6VMBBSMA
+  .wait-gate-live_fm-gate-paused: state: parked · source: run-step · parked at test: 1 finding(s) · ask-user: authority decision · run: 01M5XW0X6G6SCDRRYH6VMBBSMA
+  .wait-gate-live_fm-otherpr-done: state: parked · source: run-step · parked at test: 1 finding(s) · ask-user: authority decision · run: 01M5XW0X6G6SCDRRYH6VMBBSMA
 current-state reads taken this run (recheck markers written):
   .wait-gate-checked-live_fm-finished-done
   .wait-gate-checked-live_fm-gate-done
   .wait-gate-checked-live_fm-gate-paused
+  .wait-gate-checked-live_fm-otherpr-done
 queued rows drained:
+  1793078883	5	stale	live:fm-otherpr-done	stale: live:fm-otherpr-done
 
 ## finished-done task: checked, never woke
-  -rw-r--r-- 1 timkleinschmidt wheel 11 Oct 26 19:37 /private/tmp/claude-501/-Users-timkleinschmidt--treehouse-firstmate-b8697d-12-firstmate/bbf1f9eb-903e-4b8b-8942-9fe0a19f570e/scratchpad/live/home/state/.wait-gate-checked-live_fm-finished-done
+  -rw-r--r-- 1 timkleinschmidt wheel 11 Oct 27 06:27 /private/tmp/claude-501/-Users-timkleinschmidt--treehouse-firstmate-b8697d-12-firstmate/bbf1f9eb-903e-4b8b-8942-9fe0a19f570e/scratchpad/live/home/state/.wait-gate-checked-live_fm-finished-done
   no gate marker (silent)

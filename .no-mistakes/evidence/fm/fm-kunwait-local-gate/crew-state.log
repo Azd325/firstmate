@@ -1,0 +1,3 @@
+ok - a gate on the delivered PR's run reports parked over done and paused
+ok - a run on another PR, or a finished one, keeps the strict head rule
+all fm-crew-state tests passed
