@@ -1528,7 +1528,6 @@ launch_aged_pause_recheck() { # <name> <mergeable>
   pid=$!
   wait_for_exit "$pid" 150 || { reap "$pid"; fail "$name did not re-surface: $(cat "$out" 2>/dev/null)"; }
   PAUSE_RECHECK_OUT=$out
-  PAUSE_RECHECK_STATE=$state
 }
 
 test_paused_recheck_names_a_merge_conflict() {
