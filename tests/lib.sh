@@ -636,6 +636,7 @@ fm_fake_lavish_health_curl() {
 #!/usr/bin/env bash
 case "$*" in
   */health*)
+    [ -z "${FM_FAKE_LAVISH_HEALTH_LOG:-}" ] || printf '%s\n' "$*" >> "$FM_FAKE_LAVISH_HEALTH_LOG"
     [ -n "${FM_FAKE_LAVISH_HEALTH:-}" ] || exit 7
     printf '%s' "$FM_FAKE_LAVISH_HEALTH" ;;
   *)

@@ -1505,7 +1505,9 @@ fi
 lavish_server_version_notice() {  # <installed major.minor.patch>
   local installed=$1 host port body served
   command -v curl >/dev/null 2>&1 || return 0
-  host=${LAVISH_AXI_HOST:-127.0.0.1}
+  host=${LAVISH_AXI_HOST:-}
+  [ -n "$host" ] || host=$(cat "$CONFIG/lavish-axi-host" 2>/dev/null) || host=
+  host=${host:-127.0.0.1}
   case "$host" in \[*) ;; *:*) host="[$host]" ;; esac
   port=${LAVISH_AXI_PORT:-4387}
   body=$(curl -fsS -m 2 "http://$host:$port/health" 2>/dev/null) || return 0
@@ -1547,9 +1549,6 @@ detect_local_tools() {
     echo "PRESENTATION_UNAVAILABLE: lavish-axi (requires >=$LAVISH_AXI_BOARD_MIN; install: $(install_cmd lavish-axi)) - nonvisual work may proceed with plain-text decisions and reports; install or upgrade before using Lavish"
   elif ! version_parts_at_least "$lavish_parts" "$LAVISH_AXI_MIN"; then
     echo "BOOTSTRAP_INFO: lavish-axi >=$LAVISH_AXI_MIN enables confirmed board replies; this older compatible version retains the legacy reply path, but upgrade to prevent handing back a board before its reply is accepted"
-  fi
-  if [ -n "$lavish_parts" ]; then
-    lavish_server_version_notice "${lavish_parts// /.}"
   fi
   if command -v quota-axi >/dev/null 2>&1 && ! fm_quota_axi_compatible; then
     echo "OUTDATED: quota-axi (installed: $(tool_version quota-axi); requires $FM_QUOTA_AXI_MIN; upgrade: $(upgrade_cmd quota-axi))"
@@ -1679,6 +1678,8 @@ if network_phase; then
   __fm_timing_stamp=$(fm_timing_now_ms)
   gh auth status >/dev/null 2>&1 || echo "NEEDS_GH_AUTH"
   fm_timing_record phase gh-auth "$__fm_timing_stamp"
+  lavish_parts=$(tool_version_parts lavish-axi) || lavish_parts=
+  [ -z "$lavish_parts" ] || lavish_server_version_notice "${lavish_parts// /.}"
 fi
 local_phase && detect_local_config
 

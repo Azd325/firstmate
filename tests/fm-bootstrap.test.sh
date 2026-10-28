@@ -537,6 +537,33 @@ ROWS
   pass "bootstrap reports a differing running Lavish server version and stays silent otherwise"
 }
 
+test_lavish_server_probe_target() {
+  local case_dir fakebin log out health
+  health='{"ok":true,"app":"lavish-axi","version":"0.1.85"}'
+  case_dir="$TMP_ROOT/lavish-probe-host"
+  mkdir -p "$case_dir/home/config"
+  printf '%s\n' manual > "$case_dir/home/config/backlog-backend"
+  printf '%s\n' 100.64.0.5 > "$case_dir/home/config/lavish-axi-host"
+  fakebin=$(make_fake_toolchain "$case_dir")
+  log="$case_dir/curl.log"
+  : > "$log"
+  out=$(env -u LAVISH_AXI_HOST -u LAVISH_AXI_PORT PATH="$fakebin:$BASE_PATH" FM_HOME="$case_dir/home" \
+    FM_ROOT_OVERRIDE="$case_dir/home" FM_FAKE_TREEHOUSE_LEASE_HELP=1 FM_FAKE_LAVISH_AXI_VERSION=0.1.84 \
+    FM_FAKE_LAVISH_HEALTH="$health" FM_FAKE_LAVISH_HEALTH_LOG="$log" "$ROOT/bin/fm-bootstrap.sh") \
+    || fail "config-host probe: bootstrap failed"
+  assert_contains "$(cat "$log")" 'http://100.64.0.5:4387/health' "probe must use config/lavish-axi-host"
+  assert_contains "$out" 'running Lavish server is 0.1.85' "notice must name the configured server's version"
+
+  : > "$log"
+  out=$(env -u LAVISH_AXI_HOST -u LAVISH_AXI_PORT PATH="$fakebin:$BASE_PATH" FM_HOME="$case_dir/home" \
+    FM_ROOT_OVERRIDE="$case_dir/home" FM_FAKE_TREEHOUSE_LEASE_HELP=1 FM_FAKE_LAVISH_AXI_VERSION=0.1.84 \
+    FM_FAKE_LAVISH_HEALTH="$health" FM_FAKE_LAVISH_HEALTH_LOG="$log" FM_BOOTSTRAP_NETWORK=skip \
+    "$ROOT/bin/fm-bootstrap.sh") || fail "skip probe: bootstrap failed"
+  [ ! -s "$log" ] || fail "no health probe may run under FM_BOOTSTRAP_NETWORK=skip, got: $(cat "$log")"
+  assert_not_contains "$out" 'running Lavish server' "no notice under skip"
+  pass "Lavish server probe honors config/lavish-axi-host and is skipped in the local phase"
+}
+
 test_tasks_axi_min_version() {
   local label version mode requirement case_dir fakebin base out missing n archive_body multi_id installed requires expect
   missing='MISSING: tasks-axi (install: npm install -g tasks-axi)'
@@ -1514,6 +1541,7 @@ test_no_mistakes_min_version
 test_gh_axi_min_version
 test_lavish_axi_min_version
 test_lavish_server_version_notice
+test_lavish_server_probe_target
 test_tasks_axi_min_version
 test_quota_axi_min_version
 test_git_is_required_with_supported_install_instruction
