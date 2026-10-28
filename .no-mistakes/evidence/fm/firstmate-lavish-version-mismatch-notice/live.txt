@@ -1,0 +1,6 @@
+== server 0.1.85 vs installed 0.1.84
+BOOTSTRAP_INFO: lavish-axi 0.1.84 is installed but the running Lavish server is 0.1.85; the next lavish-axi call from either version restarts the server and interrupts live board polls
+== matching versions (expect nothing)
+0
+== no server (expect 0)
+0
