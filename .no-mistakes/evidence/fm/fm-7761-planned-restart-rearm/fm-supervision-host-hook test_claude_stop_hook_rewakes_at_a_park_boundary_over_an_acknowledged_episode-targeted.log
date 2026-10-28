@@ -1,0 +1,1 @@
+tests/zz-tmp-fm-supervision-host-hook test_claude_stop_hook_rewakes_at_a_park_boundary_over_an_acknowledged_episode.sh: line 1: fm_test_run: command not found

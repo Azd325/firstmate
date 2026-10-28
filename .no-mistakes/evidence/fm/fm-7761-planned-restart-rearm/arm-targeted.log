@@ -1,0 +1,7 @@
+ok - watch-arm: a planned host restart leaves an acknowledged episode closed
+ok - watch-arm: an actionable-check hand-off leaves an acknowledged episode closed
+ok - watch-arm: a non-zero exit with a planned-stop record stays closed
+ok - watch-arm: status 143 with no planned-stop record resurfaces
+ok - watch-arm: a stall eviction of an acknowledged episode resurfaces
+ok - watch-arm: a hangup without a planned-stop record resurfaces
+ok - watch-arm: a watcher killed without cleanup still resurfaces

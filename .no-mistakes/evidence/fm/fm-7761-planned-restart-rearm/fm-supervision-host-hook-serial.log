@@ -1,0 +1,16 @@
+1..25
+ok - host+hook: a main-only close after a handled turn restores inherited handling and rewakes main
+ok - host+hook: a refused inherited handling restore delivers a failure instead of silent success
+ok - host+hook: a driver returning to an idle worker is stale-handled while attended
+ok - host+hook: a driver returning to an idle worker is stale-handled while away
+ok - host+hook: boundary survives a lost continuation, retries, and transfers one watcher after acknowledgement
+ok - host+hook: pass-through survives a lost continuation, retries, and transfers one watcher after acknowledgement
+ok - host+hook: an acknowledged hand-back at the turn keeps its pass-through row
+grep: /private/var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T/fm-supervision-host.p5XXa5/handoff-doorbell/state/.supervision-handoff.log: No such file or directory
+grep: /private/var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T/fm-supervision-host.p5XXa5/handoff-doorbell/state/.supervision-handoff.log: No such file or directory
+grep: /private/var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T/fm-supervision-host.p5XXa5/handoff-doorbell/state/.supervision-handoff.log: No such file or directory
+ok - host+hook: hand-back retry submits only to the idle owning pane without replacing human input
+not ok - hook boundary: the Stop hook must rewake main: firstmate watcher wake - one supervision event needs a handling turn now.
+check: rearm-resurface
+Run bin/fm-wake-drain.sh first, handle the wake, then run its exact WAKE_ACK_REQUIRED --ack-through command. Until that post-handling acknowledgement, interruption leaves the wake durable for idempotent re-handling. This Stop hook owns watcher continuity: when the handling turn ends, the next needed cycle arms automatically - do NOT run bin/fm-watch-arm.sh after an ordinary wake.
+acked:downtime:85852.1793193692.NHXt9R: expected exit 2, got 0
