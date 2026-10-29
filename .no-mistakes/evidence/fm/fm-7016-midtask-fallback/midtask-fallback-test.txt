@@ -1,0 +1,19 @@
+ok - setting absent does not relaunch
+ok - bind while off records nothing
+ok - setting present relaunches the next eligible profile and keeps the local copy
+ok - no eligible candidate does not relaunch and reports the decision
+ok - an unset array effort matches the recorded effort
+ok - an exact row outranks a later unset row
+ok - status line limit text does not relaunch
+ok - exhausted_now on the current profile relaunches
+ok - lower effort is not eligible
+ok - allowed lower effort relaunches
+ok - pinned limit message relaunches
+ok - unpinned limit message is not a signal
+ok - failed relaunch is not retried
+ok - blocked and needs-decision reports do not suppress each other
+ok - a successful switch closes an earlier midtask-fallback decision
+ok - a finished or waiting task is not relaunched
+ok - a recorded switch does not relaunch again
+ok - a broken config does not relaunch and exits non-zero
+ok - a prefixed pi model matches a bare model scope
