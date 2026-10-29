@@ -1,0 +1,6 @@
+nm: 2
+dp: 0
+sc: 0
+On every response to a review, test, or CI finding, including when you relay a decision, the instructions you pass the pipeline must include both of these limits:
+A fix round must not commit a file the PR did not already change, except for the smallest downstream change needed to keep already accepted product or engineering behavior correct, add behavioral tests where an executable contract exists, or keep documentation accurate.
+A CI fix that cannot reproduce the failure must not edit tests.
