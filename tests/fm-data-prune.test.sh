@@ -139,6 +139,18 @@ wait "$prune_pid"
 assert_absent "$HOME_FIXTURE/data/locked/scratch/bulk.bin" 'prune did not resume after control lock release'
 pass 'prune serializes with task control operations before deleting scratch'
 
+seed livelock
+printf 'window=live\n' > "$HOME_FIXTURE/state/livelock.meta"
+fm_lock_acquire_wait "$HOME_FIXTURE/state/.control-livelock.lock"
+live_rc=0
+timeout 20 env FM_HOME="$HOME_FIXTURE" FM_DATA_OVERRIDE="$HOME_FIXTURE/data" \
+  FM_STATE_OVERRIDE="$HOME_FIXTURE/state" "$ROOT/bin/fm-data-prune.sh" livelock > "$TMP_ROOT/livelock" || live_rc=$?
+fm_lock_release "$HOME_FIXTURE/state/.control-livelock.lock"
+[ "$live_rc" = 0 ] || fail 'preview of live task blocked on its control lock'
+assert_grep 'skipped' "$TMP_ROOT/livelock" 'live task was not skipped'
+assert_present "$HOME_FIXTURE/data/livelock/scratch/bulk.bin" 'live task scratch changed'
+pass 'preview skips a live task without taking its control lock'
+
 seed archived
 task_command prune --keep 0
 run_prune --confirm archived > "$TMP_ROOT/archived"

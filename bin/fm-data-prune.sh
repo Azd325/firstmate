@@ -63,6 +63,11 @@ fi
 printf 'tasks[%s]:\n' "${#TASKS[@]}"
 COUNT=0
 for task in "${TASKS[@]+"${TASKS[@]}"}"; do
+  if [ ! -f "$STATE/$task.prune-safe" ] || [ -L "$STATE/$task.prune-safe" ] \
+    || [ -e "$STATE/$task.meta" ] || [ -L "$STATE/$task.meta" ]; then
+    printf '  - id: %s\n    skipped: no verified closed teardown or live/held state\n' "$task"
+    continue
+  fi
   CONTROL_LOCK="$STATE/.control-$task.lock"
   fm_lock_acquire_wait "$CONTROL_LOCK" || die "cannot lock task control $task"
   LOCK=$(fm_meta_lock_path "$STATE/$task.meta") || die 'invalid metadata lock path'
