@@ -17,3 +17,5 @@ ok - a finished or waiting task is not relaunched
 ok - a recorded switch does not relaunch again
 ok - a broken config does not relaunch and exits non-zero
 ok - a prefixed pi model matches a bare model scope
+ok - an open decision keeps the worker from relaunching
+ok - an exhausted agy worker switches by its agy quota provider
