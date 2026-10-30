@@ -702,7 +702,7 @@ test_local_only_fork_remote_allows() {
   set -e
 
   expect_code 0 "$rc" "fork-allow: teardown should succeed when HEAD is on a fork remote"
-  assert_grep '^fm-prune-safe-v1$' "$case_dir/state/task-x1.prune-safe" 'safe teardown omitted pruning receipt'
+  [ "$(cat "$case_dir/state/task-x1.prune-safe")" = fm-prune-safe-v1 ] || fail 'safe teardown omitted pruning receipt'
   ! grep -q REFUSED "$case_dir/stderr" || fail "fork-allow: teardown printed a REFUSED line"
   [ ! -e "$case_dir/state/.task-x1.branch-outcome-index" ] \
     || fail "fork-allow: teardown left the task's branch outcome index behind"
