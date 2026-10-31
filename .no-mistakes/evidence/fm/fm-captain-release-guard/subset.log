@@ -1,0 +1,3 @@
+ok - a captain hold is released only in an attended session: away refuses, quiet and no record release
+ok - release frees held work with the captain's words recorded and the body preserved
+ok - answer records the captain's words, closes idempotently, and releases routed work
