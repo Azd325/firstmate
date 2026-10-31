@@ -148,7 +148,8 @@ matrix_case A36 allow 'command -vp cd'
 # parent, pushd, option-bearing, unexpanded, or glob target stays denied.
 HOME_LINK="$TMP_ROOT/primary-link"
 ln -s "$PRIMARY" "$HOME_LINK"
-mkdir -p "$TMP_ROOT/primary-sibling"
+mkdir -p "$TMP_ROOT/primary-sibling/child"
+ln -s "$TMP_ROOT/primary-sibling/child" "$PRIMARY/escape-link"
 matrix_case H01 allow "cd $PRIMARY"
 matrix_case H02 allow "cd $PRIMARY/"
 matrix_case H03 allow "cd \"$PRIMARY\""
@@ -164,6 +165,7 @@ matrix_case H12 deny "pushd $PRIMARY"
 matrix_case H13 deny "cd -P $PRIMARY"
 matrix_case H14 deny 'cd "$PWD"'
 matrix_case H15 deny "cd $PRIMARY/*"
+matrix_case H16 deny "cd $PRIMARY/escape-link/.."
 
 MATRIX_TMP=$(mktemp -d "${TMPDIR:-/tmp}/fm-cd-policy-matrix.XXXXXX")
 FM_TEST_CLEANUP_DIRS+=("$MATRIX_TMP")

@@ -54,9 +54,9 @@ Blocking a top-level `cd` is safe in the strong sense: the guard's steady state 
 
 ### The home itself
 
-The one allowed `cd` target is the home: a top-level `cd` whose single literal absolute argument resolves, symlinks included, to exactly the primary checkout the transport scoped to (`cd /path/to/home`, `cd -- /path/to/home`, `cd /link/to/home`, `cd /path/to/home/bin/..`).
+The one allowed `cd` target is the home: a top-level `cd` whose single literal absolute argument resolves to exactly the primary checkout the transport scoped to, under both the logical rule (`..` collapsed lexically, Bash's default) and the physical rule (symlinks followed component by component, as under `set -P`) (`cd /path/to/home`, `cd -- /path/to/home`, `cd /link/to/home`, `cd /path/to/home/bin/..`).
 That command cannot move the shell out of the home, so denying it was only friction.
-The transport passes the checkout as `--home` to the policy, which compares the resolved target against the resolved home by exact path.
+The transport passes the checkout as `--home` to the policy, which compares the resolved target against the resolved home by exact path under both rules; a target that leaves the home under either rule, such as `cd /path/to/home/link/..` where `link` points outside the home, is denied.
 Everything else stays denied: a child (`cd /path/to/home/bin`), sibling, or parent directory, a relative target such as `cd .`, a target carrying an expansion, substitution, tilde, or glob the policy would have to evaluate (`cd "$PWD"`, `cd ~`), a `cd` with options (`cd -P /path/to/home`) or extra arguments, a `pushd` or `popd` to any target, and a later `cd` in the same command list (`cd /path/to/home && cd projects/foo`).
 Without `--home` the policy exempts no target.
 

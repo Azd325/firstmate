@@ -9,9 +9,11 @@
 // scoping to the real primary checkout lives in the bin/fm-cd-pretool-check.sh
 // transport, not here. See docs/cd-guard.md for the full contract.
 //
-// One target is exempt: a `cd` whose single literal absolute argument resolves,
-// symlinks included, to exactly the home passed as --home. That cd cannot move
-// the shell out of the home, so it is allowed. A relative, expanded, tilde,
+// One target is exempt: a `cd` whose single literal absolute argument resolves
+// to exactly the home passed as --home under both path rules: logical (`..`
+// collapsed lexically, Bash's default) and physical (symlinks followed component
+// by component, as under `set -P`). Either rule leaving the home, or failing to
+// resolve, denies. That cd cannot move the shell out of the home, so it is allowed. A relative, expanded, tilde,
 // glob, or option-bearing target is never resolved and stays denied, as does
 // every pushd and popd. Without --home no target is exempt.
 //
@@ -75,9 +77,9 @@ function hasCommandQueryPrefix(position) {
   return false;
 }
 
-function resolvedPath(path) {
+function resolvedPaths(path) {
   try {
-    return realpathSync(path);
+    return [realpathSync(path), realpathSync.native(path)];
   } catch {
     return null;
   }
@@ -94,9 +96,10 @@ function cdTargetsHome(command, position, wordIndex, home) {
   const [target] = args;
   if (!target.literal || target.subs.length > 0 || target.unquotedExpansion) return false;
   if (!target.value.startsWith("/")) return false;
-  const resolvedTarget = resolvedPath(target.value);
-  const resolvedHome = resolvedPath(home);
-  return resolvedTarget !== null && resolvedHome !== null && resolvedTarget === resolvedHome;
+  const resolvedTarget = resolvedPaths(target.value);
+  const resolvedHome = resolvedPaths(home);
+  if (resolvedTarget === null || resolvedHome === null) return false;
+  return resolvedTarget.every((path) => path === resolvedHome[1]);
 }
 
 function decision(command, { home = "" } = {}) {
