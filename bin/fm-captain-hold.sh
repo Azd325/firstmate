@@ -277,6 +277,7 @@ captain_hold_cleanup() {
     fm_lock_release "$CAPTAIN_CONTROL_LOCK" || true
     CAPTAIN_CONTROL_LOCK_HELD=0
   fi
+  fm_afk_contract_lock_release || true
 }
 trap captain_hold_cleanup EXIT
 
@@ -1318,6 +1319,10 @@ command_answer() {
   fi
   load_decision "$decision_file"
   acquire_task_control_lock "$id"
+  if [ "$release" = 1 ]; then
+    fm_afk_contract_lock_hold "$STATE" || fail "task $id stays held: the away-posture record is locked"
+    release_attended || fail "task $id stays held: $RELEASE_AWAY_REASON"
+  fi
   require_tasks_axi
   task_show "$id" || fail "captain-held task $id is absent from this home's configured backlog (data directory $DATA)"
   show=$TASK_SHOW_OUTPUT

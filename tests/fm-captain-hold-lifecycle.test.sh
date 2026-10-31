@@ -1041,6 +1041,42 @@ test_release_is_attended_only() {
   pass "a captain hold is released only in an attended session: away refuses, quiet and no record release"
 }
 
+# A release that waits behind another task action must recheck the away posture
+# once it holds the task control lock: the captain can enter away mode during
+# the wait, and the release then refuses with the hold still in place.
+test_release_rechecks_away_after_waiting_on_task_lock() {
+  local home show rc holder i
+  home=$(make_home release-race)
+  tasks_in "$home" add sample-widget "Ship the sample widget" --kind ship --repo sample >/dev/null \
+    || fail "could not create the held work item"
+  run_captain "$home" hold sample-widget --reason "captain go needed before shipping" >/dev/null \
+    || fail "could not hold the work item for the captain"
+  printf 'Ship it.\n' > "$home/go-race.txt"
+
+  bash -c '. "$1/bin/fm-wake-lib.sh"; fm_lock_acquire_wait "$2" && : > "$3" && sleep 30' _ \
+    "$ROOT" "$home/state/.control-sample-widget.lock" "$home/control-held" &
+  holder=$!
+  for i in $(seq 1 100); do [ -e "$home/control-held" ] && break; sleep 0.1; done
+  [ -e "$home/control-held" ] || fail "the task control lock was not taken"
+
+  rc=0
+  run_captain "$home" answer sample-widget --decision-file "$home/go-race.txt" --release \
+    >/dev/null 2>"$home/race.err" &
+  local release_pid=$!
+  sleep 1
+  FM_HOME="$home" FM_STATE_OVERRIDE="$home/state" "$ROOT/bin/fm-afk-contract.sh" enter \
+    --words 'merge green work' >/dev/null 2>&1 || fail "away entry failed"
+  kill "$holder" 2>/dev/null || true
+  pkill -P "$holder" 2>/dev/null || true
+  rm -rf "$home/state/.control-sample-widget.lock"
+  wait "$release_pid" || rc=$?
+  [ "$rc" -ne 0 ] || fail "a release that waited on the task lock lifted the hold after away entry"
+  assert_grep "attended session" "$home/race.err" "the late refusal did not name the attended-session requirement"
+  show=$(tasks_in "$home" show sample-widget --full)
+  assert_contains "$show" "held: yes" "the waiting release lifted the hold while the away record exists"
+  pass "a release waiting on the task lock rechecks the away posture under the lock"
+}
+
 # The hold-set stamp must be durable before the captain hold becomes visible.
 # A wrapper observes the real tasks-axi hold boundary, and a forced stamp-write
 # failure proves the command never publishes the hold without its timestamp.
@@ -5072,6 +5108,7 @@ test_completion_gate_attests_and_transfers
 test_answer_records_and_closes
 test_release_frees_held_work
 test_release_is_attended_only
+test_release_rechecks_away_after_waiting_on_task_lock
 test_hold_stamp_precedes_hold_visibility
 test_interrupted_answer_preserves_hold_age
 test_deferral_leaves_captains_call_until_due
