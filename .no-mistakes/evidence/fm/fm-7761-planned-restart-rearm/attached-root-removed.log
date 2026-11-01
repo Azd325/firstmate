@@ -1,0 +1,10 @@
+ok - watch-arm: handling successor delivers fresh new inbox work after-ack (intact counter) without consuming or looping
+ok - watch-arm: handling successor delivers fresh new inbox work before-ack (intact counter) without consuming or looping
+ok - watch-arm: handling successor delivers fresh new inbox work after-ack (missing counter) without consuming or looping
+ok - watch-arm: handling successor delivers fresh new inbox work before-ack (missing counter) without consuming or looping
+ok - watch-arm: handling successor delivers fresh new inbox work after-ack (malformed counter) without consuming or looping
+ok - watch-arm: handling successor delivers fresh new inbox work before-ack (malformed counter) without consuming or looping
+ok - watch-arm: handling successor delivers identical new inbox work after-ack (missing counter) without consuming or looping
+ok - watch-arm: handling successor delivers identical new inbox work after-ack (malformed counter) without consuming or looping
+ok - watch-arm: an attached arm exits within its bound when its root is removed
+exit=0
