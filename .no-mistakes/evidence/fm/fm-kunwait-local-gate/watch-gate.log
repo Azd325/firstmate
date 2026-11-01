@@ -1,0 +1,9 @@
+== test_gate_after_done_or_paused_wakes_once_per_gate
+ok - a gate that opens after a done or paused line wakes once per gate
+exit=
+== test_gate_reparked_after_answer_wakes_again
+ok - a gate that re-parks after the worker acted on an answer wakes again
+exit=
+== test_no_gate_after_done_stays_silent
+ok - a done ship whose run is not parked stays silent
+exit=
