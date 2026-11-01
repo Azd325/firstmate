@@ -1,0 +1,8 @@
+ok - fm-send popup-settle: codex $skill -> long settle -> 1.2s
+ok - fm-send popup-settle: codex $skill exact task id -> long settle -> 1.2s
+ok - fm-send popup-settle: claude $-message -> inbox plane, fast doorbell
+ok - fm-send popup-settle: claude "$5/month" -> inbox plane, fast doorbell
+ok - fm-send popup-settle: explicit target $message -> fast path (unknown harness) -> 0.3s
+ok - fm-send popup-settle: claude /command -> long settle (slash unchanged) -> 1.2s
+ok - fm-send popup-settle: codex /command -> long settle (slash unchanged) -> 1.2s
+ok - fm-send popup-settle: codex plain text -> inbox plane, fast doorbell

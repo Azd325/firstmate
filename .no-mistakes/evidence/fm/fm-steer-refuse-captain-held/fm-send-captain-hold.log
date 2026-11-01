@@ -1,0 +1,9 @@
+ok - fm-send captain hold: a held task refuses a text steer and says how to release it
+ok - fm-send captain hold: a hold past its --until date still refuses
+ok - fm-send captain hold: --key lifecycle sends to a held task still go through
+ok - fm-send captain hold: the owner's release lets steering work as before
+ok - fm-send captain hold: only an answer to the target's own hold is exempt
+ok - fm-send captain hold: the branch cannot lift a hold with --resolve-key
+ok - fm-send captain hold: a window target of a held task is refused
+ok - fm-send captain hold: an unreadable backlog refuses
+ok - fm-send captain hold: unheld tasks, backlog-less and data-less homes steer as before
