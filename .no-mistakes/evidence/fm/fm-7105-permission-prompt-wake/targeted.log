@@ -1,0 +1,39 @@
+== fm-claude-permission
+ok - one permission request produces one durable decision signal without answering or changing busy state
+ok - a resume event closes the permission decision exactly once
+ok - later requests and replacement incarnations remain distinct; stale and malformed events are refused
+exit=
+== fm-busy-adapter-wiring
+ok - pi extension events from a superseded incarnation are rejected as stale
+ok - kimi and grok install no unverified semantic wiring and classify through their own gates
+ok - opencode 1.x plugin classifies from session.status and ignores OpenCode 2 session.execution.* events
+ok - opencode plugin classifies from session.execution.* (OpenCode 2), scoped to the latched worker session
+ok - claude hooks open on UserPromptSubmit and close on Stop, StopFailure, and SessionEnd
+ok - claude hook events from a superseded incarnation are rejected without breaking the hook
+ok - gemini hooks open on BeforeAgent and close on AfterAgent and a repeated SessionEnd
+ok - gemini hook events from a superseded incarnation are rejected without breaking the hook
+ok - raw gemini launch remains unwired and classifies unknown
+ok - gemini is refused as a secondmate because it has no primary supervision protocol
+ok - kiro hooks open on userPromptSubmit and close on stop, keeping the turn-end touch
+ok - kiro hook events from a superseded incarnation are rejected without breaking the hook
+ok - raw kiro launch remains unwired and classifies unknown
+ok - codex classifies unknown until a semantic source is verified, never idle or footer-matched
+all fm-busy-adapter-wiring tests passed
+exit=
+== fm-backend-t3code
+ok - fm-spawn.sh backend=t3code: compatible tracked Codex config launches, stays out of commits, and survives cleanup
+ok - tracked Codex overlay: edited files survive refusal, interrupted restoration recovers, quoted and dotted policy keys refuse
+ok - fm-spawn.sh --backend t3code codex: refuses to overwrite a project's tracked .codex/config.toml before any mutation
+ok - fm-spawn.sh --backend t3code claude: refuses to overwrite a project's tracked CLAUDE.local.md before any mutation
+ok - Claude channel refuses a symlink in the leased worktree without following it
+ok - untracked Codex config is preserved unless Firstmate's marker owns it
+ok - fm-t3code-codex-env.sh cleanup: without an installed overlay it needs no Python and never refuses
+ok - fm-spawn.sh --backend t3code codex: an untracked Codex config in the main checkout does not refuse a worker
+ok - fm-spawn.sh --backend t3code codex: writes .codex/config.toml with GOTMPDIR, FM_TASK_ID, and TRACEPARENT
+ok - fm-spawn.sh --backend t3code codex: warns once, and still launches, unless the Codex configuration trusts the launch directory's main checkout
+ok - fm-spawn.sh --backend t3code --secondmate: project on the home, root-strategy thread, charter message, launch prefix as settings env
+ok - fm-spawn.sh --backend t3code --secondmate codex: launch prefix as .codex/config.toml shell_environment_policy
+ok - fm-spawn.sh --backend t3code: refuses before mutation when the credential is rejected
+ok - fm-teardown.sh backend=t3code: interrupts and archives the thread with a proven close, then returns the slot
+ok - fm-teardown.sh backend=t3code secondmate: interrupts and archives, then ends the home's lingering provider process before the home is removed; an unprovable scan keeps the home
+exit=

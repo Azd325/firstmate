@@ -1,0 +1,6 @@
+ok - fm-control-lib: t3code key set, state-verified, no-exit, and no-replacement membership
+ok - fm-control.sh backend=t3code: exit refuses before any call (V2 has no session stop); interrupt ends the turn natively
+ok - fm-control.sh relaunch backend=t3code: refused before anything is stopped, by the control plane and by the launch owner
+ok - fm-spawn.sh --backend t3code: leases the slot, launches the thread on it, records metadata, sends the launch brief
+ok - t3code Claude PR-tool clause: dropped only at or past the verified T3 build, kept for older or unreadable servers
+t3code exit=
