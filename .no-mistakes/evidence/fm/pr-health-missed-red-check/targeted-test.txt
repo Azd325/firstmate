@@ -1,0 +1,2 @@
+ok - the watcher sweep scans only with config/pr-register-scan present, then records a reported PR and queues a refusal
+ok - the scan arms a replacement PR despite an older PR's merge marker

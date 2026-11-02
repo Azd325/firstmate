@@ -1,0 +1,49 @@
+=== sweep 1
+watcher rc=0
+check: contributions lab-task 76dfba3240b1e08befd7879ffd8828dc6649042be61d38916beb79c3cee38982
+
+--- wake drain
+1793624222	1	check	contribution-76dfba3240b1e08befd7879ffd8828dc6649042be61d38916beb79c3cee38982	check: contributions lab-task 76dfba3240b1e08befd7879ffd8828dc6649042be61d38916beb79c3cee38982
+WAKE_ACK_REQUIRED: after handling completes run bin/fm-wake-drain.sh --ack-through 1 --recovery-generation 31808.1793624222.xrevwH
+STATUS OUTCOME BACKSTOP (newest captain-facing task event has no covering branch outcome):
+lab-task done [at=1793624210]: PR https://github.com/kunchenguid/firstmate/pull/8086 checks green
+WARNING: queued wakes pending - drain them with bin/fm-wake-drain.sh before anything else.
+wake drain: acknowledgement requires its recovery generation
+=== meta
+window=firstmate:fm-lab-task
+endpoint_task_id=lab-task
+worktree=/var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T//fm-lab.auKiAO/repo
+project=/var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T//fm-lab.auKiAO/project
+kind=ship
+mode=no-mistakes
+pr=https://github.com/kunchenguid/firstmate/pull/8086
+pr_head=8815e591acd4375ceafdbadfb28e6a2296ef0d21
+=== state
+.
+..
+.heartbeat-streak
+.inactive-outcome-reconcile
+.lab-task.open-decisions-cursor
+.last-check
+.last-heartbeat
+.last-watcher-beat
+.main-eligible-rows
+.pr-check-scan-cursor
+.secondmate-liveness-tick
+.status-presentation-cursor
+.wake-queue
+.wake-queue.seq
+.watch-deliveries.log
+.watcher-down
+contributions.check-trust
+contributions.check.sh
+home-summary.json
+lab-task.check.sh
+lab-task.meta
+lab-task.pr-poll
+lab-task.pr-poll-registration
+lab-task.status
+terminal-outcomes
+=== poll valid?
+VALID
+=== wake logs

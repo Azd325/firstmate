@@ -1,0 +1,58 @@
+=== sweep 1
+watcher rc=0
+check: pr-register: lab-task reported https://github.com/machtfit/machtfit-oscar/pull/6430 in a done line, but it was not recorded: https://github.com/machtfit/machtfit-oscar/pull/6430 is a draft pull request; a draft cannot be merged, so merge monitoring would wait for an event that cannot occur - mark it ready for review and arm again, or declare a wait instead of done if the draft is deliberate
+--- wake drain
+1793624234	1	check	pr-register	check: pr-register: lab-task reported https://github.com/machtfit/machtfit-oscar/pull/6430 in a done line, but it was not recorded: https://github.com/machtfit/machtfit-oscar/pull/6430 is a draft pull request; a draft cannot be merged, so merge monitoring would wait for an event that cannot occur - mark it ready for review and arm again, or declare a wait instead of done if the draft is deliberate
+WAKE_ACK_REQUIRED: after handling completes run bin/fm-wake-drain.sh --ack-through 1 --recovery-generation 36264.1793624234.5faR9S
+STATUS OUTCOME BACKSTOP (newest captain-facing task event has no covering branch outcome):
+lab-task done [at=1793624231]: PR https://github.com/machtfit/machtfit-oscar/pull/6430 checks green
+WARNING: queued wakes pending - drain them with bin/fm-wake-drain.sh before anything else.
+=== sweep 2
+watcher rc=0
+signal: /var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T//fm-lab.mcvo5Q/state/lab-task.status
+--- wake drain
+1793624269	3	signal	lab-task.status	signal: /var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T//fm-lab.mcvo5Q/state/lab-task.status
+WAKE_ACK_REQUIRED: after handling completes run bin/fm-wake-drain.sh --ack-through 3 --recovery-generation 38904.1793624269.UV9YGQ
+wake annotation: latest wake-EVENT observed at drain, not current state: lab-task.status: done [at=1793624231]: PR https://github.com/machtfit/machtfit-oscar/pull/6430 checks green
+WARNING: queued wakes pending - drain them with bin/fm-wake-drain.sh before anything else.
+=== sweep 3
+./lab.sh: line 20: 47188 Alarm clock: 14         FM_HOME=$LAB FM_CHECK_INTERVAL=3600 FM_HEARTBEAT=999999 perl -e 'alarm 40; exec @ARGV' bin/fm-watch.sh > $LAB/watch.$i.log 2>&1
+watcher rc=142
+--- wake drain
+WAKE_ACK_REQUIRED: after handling completes run bin/fm-wake-drain.sh --ack-through 0 --recovery-generation 47188.1793624311.JoaStb
+=== meta
+window=firstmate:fm-lab-task
+endpoint_task_id=lab-task
+worktree=/var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T//fm-lab.mcvo5Q/repo
+project=/var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T//fm-lab.mcvo5Q/project
+kind=ship
+mode=no-mistakes
+=== state
+.
+..
+.hb-surfaced-lab-task
+.heartbeat-streak
+.inactive-outcome-reconcile
+.lab-task.open-decisions-cursor
+.last-check
+.last-heartbeat
+.last-watcher-beat
+.pr-check-scan-cursor
+.secondmate-liveness-tick
+.seen-lab-task_status
+.status-presentation-cursor
+.wake-queue
+.wake-queue.seq
+.watch-deliveries.log
+.watcher-down
+home-summary.json
+lab-task.meta
+lab-task.pr-register-refused
+lab-task.status
+terminal-outcomes
+=== poll valid?
+INVALID
+=== pr-register wakes ever queued
+36264	Mon Nov  2 12:57:11 2026     bash bin/fm-watch.sh	check: pr-register: lab-task reported https://github.com/machtfit/machtfit-oscar/pull/6430 in a done line, but it was not recorded: https://github.com/machtfit/machtfit-oscar/pull/6430 is a draft pull request; a draft cannot be merged, so merge monitoring would wait for an event that cannot occur - mark it ready for review and arm again, or declare a wait instead of done if the draft is deliberate
+cursor:
+/var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T//fm-lab.mcvo5Q/state/.pr-check-scan-cursor

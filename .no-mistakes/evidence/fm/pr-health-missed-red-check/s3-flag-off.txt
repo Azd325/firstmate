@@ -1,0 +1,43 @@
+=== sweep 1
+watcher rc=0
+signal: /var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T//fm-lab.Z52hmV/state/lab-task.status
+--- wake drain
+1793624345	2	signal	lab-task.status	signal: /var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T//fm-lab.Z52hmV/state/lab-task.status
+WAKE_ACK_REQUIRED: after handling completes run bin/fm-wake-drain.sh --ack-through 2 --recovery-generation 64970.1793624345.ckAh5Z
+wake annotation: latest wake-EVENT observed at drain, not current state: lab-task.status: done [at=1793624313]: PR https://github.com/kunchenguid/firstmate/pull/8086 checks green
+STATUS OUTCOME BACKSTOP (newest captain-facing task event has no covering branch outcome):
+lab-task done [at=1793624313]: PR https://github.com/kunchenguid/firstmate/pull/8086 checks green
+WARNING: queued wakes pending - drain them with bin/fm-wake-drain.sh before anything else.
+=== meta
+window=firstmate:fm-lab-task
+endpoint_task_id=lab-task
+worktree=/var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T//fm-lab.Z52hmV/repo
+project=/var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T//fm-lab.Z52hmV/project
+kind=ship
+mode=no-mistakes
+=== state
+.
+..
+.hb-surfaced-lab-task
+.heartbeat-streak
+.inactive-outcome-reconcile
+.lab-task.open-decisions-cursor
+.last-check
+.last-heartbeat
+.last-watcher-beat
+.secondmate-liveness-tick
+.seen-lab-task_status
+.status-presentation-cursor
+.wake-queue
+.wake-queue.seq
+.watch-deliveries.log
+.watcher-down
+home-summary.json
+lab-task.meta
+lab-task.status
+terminal-outcomes
+=== poll valid?
+INVALID
+=== pr-register wakes ever queued
+cursor:
+ls: /var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T//fm-lab.Z52hmV/state/.pr-check-scan-cursor: No such file or directory
