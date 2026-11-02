@@ -1,0 +1,15 @@
+ok - socket refusal over a terminal attributed run reports blocked
+ok - socket-down evidence outranks a live run only while it is the log's latest event
+ok - broken-pipe blocker over a live run keeps the plain superseded reading
+ok - genuine daemon-down blocked line still reports blocked
+ok - a busy secondmate keeps its open blocker until that exact key closes
+ok - the most recently opened decision supplies the reported state and detail
+ok - ship and scout terminal declarations supersede stale decisions
+ok - latest status retains legacy completion events and shared captain matching
+ok - latest status subprocess work stays bounded and still reads past a long prose tail
+ok - genuine parked run is not flagged superseded
+ok - the parked human-decision component is derived from the findings table's action column
+ok - scalar gate parked run is not flagged superseded
+ok - a gate on the delivered PR's run reports parked over done and paused
+ok - a run on another PR, or a finished one, keeps the strict head rule
+targeted crew-state tests passed

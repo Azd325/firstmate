@@ -1,0 +1,6 @@
+1..4
+ok - a gate that opens after a done or paused line wakes once per gate
+ok - a gate that re-parks after the worker acted on an answer wakes again
+ok - a gate that resumes and parks again between two reads, with no busy poll, wakes again
+ok - a done ship whose run is not parked stays silent
+FM_TEST_COMPLETE
