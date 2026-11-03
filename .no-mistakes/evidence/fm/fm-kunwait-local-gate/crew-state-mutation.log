@@ -1,0 +1,4 @@
+ok - a gate on the delivered PR's run reports parked over done and paused
+not ok - a working task is not answered by a parked run on its delivered PR (unexpected: 'source: run-step')
+--- output ---
+state: parked · source: run-step · parked at test: 1 finding(s) · ask-user: authority decision · run: 01RUN

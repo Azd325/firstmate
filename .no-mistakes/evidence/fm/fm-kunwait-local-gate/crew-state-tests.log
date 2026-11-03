@@ -1,0 +1,6 @@
+ok - skipped-rebase: terminal delivery reports only observed evidence
+ok - cancelled-skipped-rebase: terminal delivery reports only observed evidence
+ok - passed: terminal delivery reports only observed evidence
+ok - a gate on the delivered PR's run reports parked over done and paused
+ok - a run on another PR, or a finished one, keeps the strict head rule
+CREWSTATE_OK
