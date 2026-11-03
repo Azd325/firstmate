@@ -1,6 +1,9 @@
 ok - teardown retires opencode's busy plugin before pool return
 ok - hidden untracked work is refused before return while a clean control returns
 ok - content fallback distinguishes unavailable Git proof, containment, conflicts, and unlanded content
+orca/reap-refusal: teardown_exit=1 replay_exit=0 metadata_after_replay=retained backlog_after_replay=in_flight
+tmux/reap-refusal: teardown_exit=1 replay_exit=0 metadata_after_replay=retained backlog_after_replay=in_flight
+ok - post-reap proof retains late work and retry records on ordinary and Orca paths, preserving clean/force/scout behavior
 ok - status archival is opt-in and preserves the complete log
 ok - config-absent teardown does not read or invoke record export
 ok - unopted teardown ignores symlinked config when record export is absent
@@ -93,61 +96,3 @@ ok - ship copy with a nested clone is refused and its bytes stay
 ok - a return that leaves residue names the lost slot and the remaining paths
 ok - a dirty return is reported even when a later teardown step refuses
 ok - a forced secondmate teardown returns a child scout copy with a nested clone clean
-ok - a forced secondmate teardown warns about a dirty child return and still completes
-ok - a return that leaves no readable copy reports the slot as unverified, not clean
-ok - ignored files survive the scratch clean and plain scratch does not
-ok - gh lookup error with content not in default refuses (fail-safe)
-ok - a record predating spawn_gen refuses teardown until --legacy-record is passed
-ok - a windowless leftover with no spawn_gen and no worktree tears down without --legacy-record
-ok - a windowless leftover with no spawn_gen also tears down when --legacy-record is passed
-ok - a windowless leftover still refuses while its worktree holds unlanded work
-ok - a windowless record with a spawn_gen, a non-tmux backend or endpoint identity, no backlog validation, or ambiguous, foreign, or malformed identity still refuses
-ok - a windowless leftover retries its retained legacy stamp without --legacy-record
-ok - a landed legacy record with a dead endpoint tears down and logs its accepted incarnation
-ok - --legacy-record never relaxes the unlanded-work refusal
-ok - an endpoint that cannot be confidently read as dead refuses --legacy-record teardown
-ok - --legacy-record teardown rolls its stamp back when the close marker write fails
-ok - a legacy stamp a failed rollback left behind still faces the endpoint gate
-ok - a corrupt spawn_gen is never accepted as a legacy record
-ok - provably-stale worktree index.lock (old, no live holder) is cleared and teardown succeeds
-ok - live-held worktree index.lock is never removed and teardown refuses
-ok - lsof errors leave worktree index.lock in place and refuse teardown
-ok - stale lock cleanup rechecks and refuses dirty worktree before return
-ok - normal repo index.lock is resolved from the worktree and cleared when stale
-ok - index-lock mtime fault injection is PATH-based; skipped on Darwin where stat is /usr/bin/stat
-ok - transient index.lock cleared after first failed return is retried successfully without force-remove
-ok - persistent index.lock exhausts retries and refuses without force-removing the lock
-ok - empty retry wait overrides use the default without aborting teardown
-ok - fractional legacy retry wait remains supported without arithmetic
-ok - teardown records the task's pipeline spend before removing its branch and record
-ok - teardown skips all pipeline-spend recording when the home has not opted in
-ok - teardown records unavailable pipeline spend for an owned ship task whose copy is gone
-ok - a task's own parked no-mistakes run is aborted, not orphaned, before the worker is removed
-ok - a parked run in a resolved workspace no-mistakes home is aborted before the worker is removed
-ok - a run that lands on passed-with-override after abort is still recognized as terminal
-ok - a run that lands on passed-with-skips after abort is still recognized as terminal
-ok - a parked run the pipeline advanced past the task copy is still concluded from the runs ledger, not orphaned
-ok - a ledger row for a different head never authorizes a parked-run abort
-ok - a malformed ledger row never authorizes a parked-run abort
-ok - an impossible ledger date never authorizes a parked-run abort
-ok - a terminal status with a stale gate never reaches ledger cleanup
-ok - an advanced head present locally aborts through the strict rule alone - the ledger fallback stays dormant
-ok - an unresolvable active row with no same-branch anchor is never concluded (conservative refusal)
-ok - an ancestor-only anchor never binds an advanced parked run to this task
-ok - a terminal unfetched-head row is stale history and never concludes a run
-ok - a terminal newest row anchored at this worktree's head never authorizes an abort
-ok - a resolvable diverged newer same-branch row makes every older row stale history; no run is concluded
-ok - consecutive unresolvable rows are ambiguous and never conclude a run
-ok - a ledger-proven continuation is still left alone while the run is autonomously active
-ok - teardown refuses before reap or removal when a task-owned run remains parked
-ok - a different run cannot confirm the targeted abort
-ok - empty post-abort status is not accepted as confirmation
-ok - the CLI's exact run-not-found signal confirms completion
-ok - a parked run on another branch is never aborted by this task's teardown (ownership is precise)
-ok - a task-owned autonomous running step is left alone rather than aborted
-ok - a leaked descendant process rooted under the task's worktree is reaped by teardown, not left surviving
-ok - a leaked descendant process rooted under the task's per-task tasktmp is reaped by teardown too
-ok - missing lsof falls back to reaping the tmux pane process group
-ok - an erroring lsof scan refuses teardown and preserves the task
-ok - a reused pid with a different start time is never force-killed
-ok - an exec change preserves birth identity and the process is reaped
