@@ -1,0 +1,4 @@
+1..1
+wait_for_exit: owned pid 20211 exceeded 100 polls; sending TERM
+20211 13375 S    bash {run-worktree}/bin/fm-watch.sh
+not ok - a gate reopened between two reads with an identical line did not wake
