@@ -1,0 +1,1 @@
+ok - fm_composer_codex_mouse_noise_only: SGR mouse reports alone are noise; any other character is not

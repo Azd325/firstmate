@@ -1,0 +1,1 @@
+not ok - text after a blank row with no footer is not noise
