@@ -1,0 +1,23 @@
+ok - a Treehouse slot claim names the launched task, refuses when unclaimable, and is dropped by a locked abort
+ok - a launch refused after its slot claim leaves the pool for a retry and a second task
+ok - a refused polytoken launch leaves its per-id paths alone while another spawn holds the per-id lock
+ok - a codex launch refused on tmux closes its window and a retry launches
+ok - a refused claude launch removes its wiring from the returned slot
+ok - a codex launch refused on hc closes its terminal and a retry launches
+ok - the treehouse-get isolation refusal points only at what survives the abort
+ok - --base-branch picks the copy's starting point and is recorded; a missing or local-only base refuses
+ok - a spawn refuses when --base-branch and the brief's Base branch lines disagree
+ok - a based scout on a forge=gerrit project is refused at spawn
+ok - a dirty pooled worktree is refused without discarding its local work
+ok - an unresolved remote default branch refuses the pooled worktree
+ok - an unreachable origin refuses a potentially stale pooled worktree
+ok - a dirty origin-less pooled worktree is refused without discarding its local work
+ok - an origin configuration without a URL refuses the pooled worktree
+ok - an empty origin configuration section refuses the pooled worktree
+ok - an origin-less pool with a stale submodule pin refuses while naming both pins and no remedy
+ok - an unpushed submodule commit keeps the uncommitted-work refusal and survives it
+ok - work inside a submodule is still refused as uncommitted work, not called stale
+ok - a stale pin carrying real work is refused conservatively, never called stale
+ok - a stale pin beside other dirt yields the conservative refusal alone, with no stale-pin line
+ok - with the opt-in an unclean slot is still refused, untouched, before any base is chosen
+# all fm-spawn-pool-base-freshen tests passed
