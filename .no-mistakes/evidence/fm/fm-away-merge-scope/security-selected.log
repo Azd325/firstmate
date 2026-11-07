@@ -1,0 +1,3 @@
+ok - queued merges retain their away authority after captain return
+ok - teardown cannot race merged-poll authority consumption
+exit=0
