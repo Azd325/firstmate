@@ -1,0 +1,9 @@
+101a102,105
+>   Unless the away words explicitly forbid starting it (or all new work) for this absence, dispatch also proceeds for one class: a recurring backlog item that dispatches a read-only scout (no pull request, no project change), whose captain hold reason records the captain's own standing order to start it while away, and whose hold date has arrived; words that merely name other work do not stop it, and a current explicit captain instruction outranks the standing order. A ship or any other recurring item still waits for the return.
+>   File and dispatch only the run that hold names, within the record's spend cap, through `bin/fm-spawn.sh`, then re-hold the item until the next day the way that hold already says.
+>   Leave the hold itself in place until that re-hold, merge nothing because of that order, and dispatch no other new work.
+>   Report that dispatch in the outcome, and do not open the summary with "per your away instructions:" because the words did not name it.
+105c109
+< Never by analogy: act only where the words plainly name the event and the action; the words cover nothing they do not say.
+---
+> Never by analogy: act only where the words plainly name the event and the action, or where the standing-order hold dispatch above names it; the words cover nothing they do not say, and that dispatch is the only thing a silent or empty set of words leaves open.
