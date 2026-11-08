@@ -1,0 +1,1 @@
+bash tests/fm-dispatch-resolve.test.sh: exit 0; '# all fm-dispatch-resolve tests passed'; includes 'ok - resolution record: one line without brief text, nothing when off, write failures change nothing'
