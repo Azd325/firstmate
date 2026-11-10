@@ -1,0 +1,8 @@
+CONFLICTING:
+stale: sess:fm-overdue-away (paused 3s, wait overdue - decide or release, merge conflict with its base)
+ok - overdue line names conflict
+MERGEABLE:
+stale: sess:fm-overdue-away (paused 3s, wait overdue - decide or release)
+ok - overdue line names conflict
+
+ok - a paused recheck names a merge conflict only when the pull request conflicts
