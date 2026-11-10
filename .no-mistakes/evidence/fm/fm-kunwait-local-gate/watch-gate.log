@@ -1,15 +1,12 @@
+== test_stale_terminal_status_overridden_by_active_run
+not ok - stale suppressor not advanced on absorb
 == test_gate_after_done_or_paused_wakes_once_per_gate
-ok - a gate that opens after a done or paused line wakes once per gate
-exit=
+not ok - done: an unknown read woke: stale: test:fm-wg
 == test_gate_reparked_after_answer_wakes_again
-ok - a gate that re-parks after the worker acted on an answer wakes again
-exit=
+not ok - the re-parked gate wake is wrong: stale: test:fm-wg
 == test_gate_reparked_between_reads_wakes_again
-ok - a gate that resumes and parks again between two reads, with no busy poll, wakes again
-exit=
+not ok - the same gate opening woke twice: stale: test:fm-wg
 == test_stamped_gate_survives_a_busy_poll
-ok - a stamped gate keeps its identity across a busy poll and wakes only when it reopens
-exit=
+not ok - the same gate opening woke again after a busy poll: stale: test:fm-wg
 == test_no_gate_after_done_stays_silent
 ok - a done ship whose run is not parked stays silent
-exit=

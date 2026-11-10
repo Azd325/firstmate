@@ -1,0 +1,16 @@
+(PATH = macOS system tools; nix GNU stat/date make baseline watch tests fail too)
+== test_gate_after_done_or_paused_wakes_once_per_gate
+not ok - done: the same gate woke on a later poll: stale: test:fm-wg
+== test_gate_reparked_after_answer_wakes_again
+not ok - the re-parked gate wake is wrong: stale: test:fm-wg
+== test_gate_reparked_between_reads_wakes_again
+not ok - the same gate opening woke twice: stale: test:fm-wg
+== test_stamped_gate_survives_a_busy_poll
+not ok - the same gate opening woke again after a busy poll: stale: test:fm-wg
+== test_no_gate_after_done_stays_silent
+ok - a done ship whose run is not parked stays silent
+== crew-state (3 gate cases)
+ok - a gate on the delivered PR's run reports parked over done and paused
+ok - a run on another PR, or a finished one, keeps the strict head rule
+ok - a parked gate survives a dead daemon with its findings intact
+scratch-crew-ok
