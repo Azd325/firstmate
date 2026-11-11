@@ -11,6 +11,10 @@ ok - allowed lower effort relaunches
 ok - pinned limit message relaunches
 ok - unpinned limit message is not a signal
 ok - failed relaunch is not retried
+ok - task retired during relaunch is not recorded
+ok - task retired during a successful relaunch is not recorded
+ok - task replaced by a new incarnation during relaunch is not recorded
+ok - task respawned without the fallback binding is not recorded
 ok - blocked and needs-decision reports do not suppress each other
 ok - a successful switch closes an earlier midtask-fallback decision
 ok - a finished or waiting task is not relaunched
