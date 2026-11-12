@@ -1,0 +1,10 @@
+ok - absorb: declared waits bound turn-end wakes and preserve real events
+exit=0
+ok - bounded: declared waits bound turn-end wakes and preserve real events
+exit=0
+ok - expiry: declared waits bound turn-end wakes and preserve real events
+exit=0
+ok - seen: declared waits bound turn-end wakes and preserve real events
+exit=0
+ok - status: declared waits bound turn-end wakes and preserve real events
+exit=0
