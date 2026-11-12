@@ -1,0 +1,4 @@
+idle: empty
+typed: pending
+doubleFast: unknown
+slow: unknown

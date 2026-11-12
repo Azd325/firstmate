@@ -1,0 +1,3 @@
+ok - matrix: grok's real oversized titled bottom is empty while typed and unproved panes stay safe
+ok - matrix: grok 1.0.44's approval-titled equal-width bottom is empty while typed and unknown titles stay safe
+ok - matrix: grok 1.0.77's Fast-model approval title is empty while typed and unobserved titles stay safe
