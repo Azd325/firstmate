@@ -1,0 +1,5 @@
+lifecycle-flow exit=0
+lifecycle-orphan-readiness exit=0
+aggregate exit=1
+aggregate2 exit=1
+base aggregate exit=1

@@ -1,0 +1,7 @@
+not-autohandled: flow-source (left for the handler; still unacknowledged)
+ok - one external adapter registers, invokes, captures unhandled evidence, classifies, and terminally retires end to end
+ok - inner result.silent host crash releases the parent lifecycle lock before terminal retry
+ok - local binding retirement requires its exact identity and disables invocation
+
+all extension-binding tests passed
+FM_EXTENSION_BINDING_SEGMENT=$s bash tests/fm-extension-binding.test.sh  8.40s user 8.43s system 65% cpu 25.871 total

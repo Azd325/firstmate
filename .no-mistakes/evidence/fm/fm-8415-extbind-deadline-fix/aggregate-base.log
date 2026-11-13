@@ -1,0 +1,16 @@
+ok - unknown extension conformance section selectors fail before setup
+ok - real deadline startup
+ok - real deadline handshake
+ok - real deadline launch
+ok - the section coordinator propagates ordered failures and bounded cleanup
+/private/var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T/fm-extension-binding.vThuvY/remote-root/bin/fm-procevent.sh: line 259: /private/var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T/fm-extension-binding.vThuvY/remote-root/bin/fm-task-inbox-lib.sh: No such file or directory
+/private/var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T/fm-extension-binding.vThuvY/remote-root/bin/fm-procevent.sh: line 261: /private/var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T/fm-extension-binding.vThuvY/remote-root/bin/fm-backend.sh: No such file or directory
+not-autohandled: example-file (left for the handler; still unacknowledged)
+not-autohandled: flow-source (left for the handler; still unacknowledged)
+not ok - an isolated extension conformance section failed
+bash tests/fm-extension-binding.test.sh  12.44s user 15.54s system 59% cpu 46.973 total
+Traceback (most recent call last):
+  File "<stdin>", line 135, in <module>
+AssertionError: AssertionError('deadline fixture did not reach its control boundary')
+AssertionError('deadline fixture did not reach its control boundary')
+AssertionError('deadline fixture did not reach its control boundary')
