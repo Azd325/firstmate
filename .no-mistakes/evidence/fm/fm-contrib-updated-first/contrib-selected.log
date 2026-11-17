@@ -1,0 +1,4 @@
+ok - rotation preserves timed-out records and refreshes every slow PR on successive cycles
+ok - an updated URL that cannot be measured rejoins the rotation
+ok - a slow updated URL does not hold back a newer update
+timeout 560 bash tests/_tmp_sel.test.sh  12.22s user 18.41s system 18% cpu 2:47.73 total
