@@ -1,0 +1,16 @@
+### auto closes=''
+10:Follow the guidance no-mistakes itself provides for the mechanics: it loads when you invoke /no-mistakes, and `no-mistakes axi run --help` plus the `help` lines in each `axi` response are authoritative and version-matched to the installed binary.
+26:Whenever a drive call returns without a gate or an outcome - its own wait elapsed, or it was killed or timed out - reattach at once by re-running `no-mistakes axi run` without flags, backgrounded the same way; once checks are green it returns `checks-passed` immediately, and if it refuses because no run is active, read the finished outcome from `no-mistakes axi status`.
+34:- NEVER pass `--yes` (or `-y`) to `no-mistakes axi run` or `no-mistakes axi respond`. It is banned fleet-wide.
+### manual closes=''
+### auto closes='8504'
+2:Delivery contract: mode=no-mistakes closes=8504
+8:This task closes issue #8504: pass `--closes 8504` on every `no-mistakes axi run` that starts a run, including a new run after a failed or cancelled one, because a run started without it drops the closing reference from the PR body.
+11:Follow the guidance no-mistakes itself provides for the mechanics: it loads when you invoke /no-mistakes, and `no-mistakes axi run --help` plus the `help` lines in each `axi` response are authoritative and version-matched to the installed binary.
+27:Whenever a drive call returns without a gate or an outcome - its own wait elapsed, or it was killed or timed out - reattach at once by re-running `no-mistakes axi run` without flags, backgrounded the same way; once checks are green it returns `checks-passed` immediately, and if it refuses because no run is active, read the finished outcome from `no-mistakes axi status`.
+35:- NEVER pass `--yes` (or `-y`) to `no-mistakes axi run` or `no-mistakes axi respond`. It is banned fleet-wide.
+### manual closes='8504'
+2:Delivery contract: mode=no-mistakes closes=8504 pr=manual
+10:This task closes issue #8504: put a plain `Closes #8504` line in the PR body you write, because the skipped `pr` step writes no closing reference.
+### branch fm/8504-x, field unset (must not infer)
+0
