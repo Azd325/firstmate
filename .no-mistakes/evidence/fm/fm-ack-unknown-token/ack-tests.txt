@@ -1,0 +1,2 @@
+ok - a transient ready-for-pr label wakes and its exact acknowledgement survives replay
+ok - ack refuses a token that matches no pending signal, including one no longer pending
