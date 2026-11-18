@@ -1,0 +1,4 @@
+ESCALATIONS(CONFLICTING):
+stale: sess:fm-overdue-zz (paused 3s, wait overdue - decide or release, merge conflict with its base)
+ESCALATIONS(MERGEABLE):
+stale: sess:fm-overdue-zz (paused 3s, wait overdue - decide or release)

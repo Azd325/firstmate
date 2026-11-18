@@ -1,0 +1,14 @@
+ok - a paused recheck names a merge conflict only when the pull request conflicts
+== test_paused_recheck_names_a_merge_conflict rc=0
+ok - with paused-recheck-silent on, a conflicting pull request still wakes and names the conflict
+== test_silent_recheck_flag_on_wakes_for_a_conflicting_pull_request rc=0
+not ok - stale suppressor not advanced on paused absorb
+== test_nonterminal_stale_paused_absorbed_then_resurfaced rc=1
+date: 1795026049: No such file or directory
+touch: invalid date format ‘’
+ok - a declared wait whose until time has passed is rechecked at once, then held to the cadence
+== test_paused_until_that_passed_is_rechecked_before_the_cadence rc=0
+date: 1794936119: No such file or directory
+touch: invalid date format ‘’
+ok - with config/pause-ceiling, a dated pause past its ceiling opens one keyed decision that a worker event closes
+== test_pause_ceiling_dated_overdue_pause_opens_one_decision rc=0
