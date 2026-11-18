@@ -1,0 +1,23 @@
+$ fm-check-register.sh --help
+Bind an intentional custom watcher check to its current bytes.
+Usage: fm-check-register.sh <id>
+Retire with fm-check-unregister.sh <id>; do not hand-compose an rm.
+The watcher stops a registered check after FM_CHECK_TIMEOUT seconds (default
+30); keep it fast, and see docs/configuration.md for the variable.
+exit=0
+$ -h
+Bind an intentional custom watcher check to its current bytes.
+Usage: fm-check-register.sh <id>
+Retire with fm-check-unregister.sh <id>; do not hand-compose an rm.
+The watcher stops a registered check after FM_CHECK_TIMEOUT seconds (default
+30); keep it fast, and see docs/configuration.md for the variable.
+exit=0
+$ (no args)
+error: invalid custom check registration
+exit=2
+$ bad id
+error: invalid custom check registration
+exit=2
+error: custom check is unavailable
+register exit=1
+t1.check.sh

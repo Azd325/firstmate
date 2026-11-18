@@ -1,0 +1,4 @@
+registered: state/t1.check.sh
+exit=
+t1.check-trust
+t1.check.sh
