@@ -57,7 +57,6 @@ ok - the real watcher poll delivers a child's terminal ledger line to the parent
 actionable: inactive terminal outcome awaiting captain presentation: child=b state=done
 ok - stalled state reads are bounded without starving later children
 actionable: inactive terminal outcome awaiting captain presentation: child=b state=done
-actionable: inactive terminal outcome awaiting captain presentation: child=a state=failed
 ok - stalled liveness reads are bounded without starving later children
 ok - aggregate scan budget includes durable wake operations
 actionable: inactive terminal outcome needs parent report: child=child state=failed (missing or unreadable parent binding .fm-secondmate-parent)
@@ -71,6 +70,8 @@ actionable: inactive terminal outcome awaiting captain presentation: child=child
 ok - a terminal outcome names no pull request when its run opened none
 actionable: inactive terminal outcome awaiting captain presentation: child=child state=done pr=https://example.test/owner/repo/pull/42
 ok - a terminal outcome names the pull request its own run opened
+ok - with the scan opt-in, a child report names a replacement or forge PR and keeps a recorded PR the log never named
+ok - without the scan opt-in, a child report keeps the recorded PR and accepts only a GitHub-shaped ready line
 actionable: inactive terminal outcome awaiting captain presentation: child=child state=done pr=https://github.com/owner/repo/pull/7
 ok - a status-log sourced outcome keeps the pull request that record named
 actionable: inactive terminal outcome awaiting captain presentation: child=child state=done pr=https://gitlab.example/group/sub/project/-/merge_requests/8
