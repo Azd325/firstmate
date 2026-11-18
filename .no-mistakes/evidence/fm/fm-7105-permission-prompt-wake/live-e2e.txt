@@ -1,0 +1,1 @@
+ok - claude 2.1.311 (Claude Code): real auto-mode PermissionRequest produces a decision signal within 120s, before the 3600s busy bound; no keys sent
