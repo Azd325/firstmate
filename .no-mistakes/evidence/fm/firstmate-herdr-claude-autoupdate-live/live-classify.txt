@@ -1,0 +1,9 @@
+P2=w1:p2
+P3=w1:p3
+
+
+w1:p1 agent_get="agent_not_found" process_state=shell agent_state=no-agent
+w1:p2 agent_get="agent_not_found" process_state=other agent_state=unknown
+w1:p3 agent_get="agent_not_found" process_state=other agent_state=unknown
+w1:p4 process_state=shell agent_state=no-agent
+w1:p4 agent_get=agent_not_found process_state=agent agent_state=live
