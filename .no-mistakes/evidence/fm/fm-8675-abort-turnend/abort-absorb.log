@@ -1,0 +1,4 @@
+1..2
+ok - signal_crew_provably_working: benign only when every referenced crew is provably working
+ok - an aborted run is superseded by a newer busy verdict only under the opt-in flag
+FM_TEST_COMPLETE
