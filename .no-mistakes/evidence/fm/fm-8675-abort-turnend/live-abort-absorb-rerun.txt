@@ -1,0 +1,12 @@
+== run store row
+01M8BWJJZ25CZP0N9K7JR8WK50|failed|step review: aborted by user: wrong approach
+== busy-state
+v1 gen=gen1 seq=1 state=busy source=claude-hook event=prompt ts=1795695643
+== bin/fm-crew-state.sh abort
+state: failed · source: run-step · run failed · run: 01M8BWJJZ25CZP0N9K7JR8WK50
+== flag OFF (config/turnend-abort-absorb absent)
+classifier: SURFACES (actionable)
+== flag ON
+classifier: ABSORBED (benign)
+== flag ON, worker idle (not busy)
+classifier: SURFACES (actionable)
