@@ -1,0 +1,5 @@
+1..3
+ok - host: a branch prompt that changed between turns opens a new conversation on the current prompt
+ok - host: an unchanged branch prompt resumes the same conversation
+ok - host: a branch prompt that cannot be generated is reported and never resumes the saved conversation
+FM_TEST_COMPLETE

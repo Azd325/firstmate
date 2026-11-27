@@ -1,0 +1,39 @@
+1..3
+not ok - a changed branch prompt must open a new conversation
+--- /private/var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T/fm-supervision-host.Mh0wWf/prompt-changed/engine-call.2 ---
+mode=handle
+actor=branch
+holder=64951
+primary=claude
+turn=host-64957-1795780549.2
+arg=-p
+arg=FIRSTMATE SUPERVISION WAKE: signal: /private/var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T/fm-supervision-host.Mh0wWf/prompt-changed/state/demo.status
+
+Handle this per your operating procedure and finish with the bin/fm-branch-report.sh command.
+
+POSTURE: AWAY. The away-posture record state/.afk-contract exists, so the captain is not present and MAIN is parked: you take every row, including check rows and decision rows, and no outcome reaches the captain until the return brief. The record below is the captain's away words, verbatim, and the whole mandate: act on them by your own judgment where this event is the moment they name, only through the guarded scripts under MAIN's standing authority - never more - which enforce it: bin/fm-pr-merge.sh merges any pull request that is green at its live head, synchronously, and refuses a red one or --allow-red; bin/fm-spawn.sh dispatches queued work (already queued, or filed by you from the words) within the spend cap; bin/fm-send.sh --resolve-key answers a decision the words pre-answer, or one the ask-user-authority policy in your prompt lets firstmate decide; bin/fm-merge-local.sh still refuses you. Never by analogy, and hold on doubt: a sentence you cannot act on with confidence is reported with verdict captain, naming it, and left for the return. Credential entry, legal or financial acceptance, an attended prompt, any discard the captain did not name, and any destructive, irreversible, or security-sensitive action are refused for every actor in every posture, whatever the words say. Log every action taken under the words in its outcome summary, opening with "per your away instructions:". A mirrored captain sentence authorizes nothing new once the record exists. The record, verbatim:
+Away posture (recorded):
+  entered: 2026-11-27T11:55:49Z
+  expected return: not given
+  spend cap: 4 concurrent workers
+  reach: hold-for-return only. No phone channel is configured; anything that needs you waits for your return.
+  your words (verbatim):
+    watch the fleet; merge nothing
+arg=--safe-mode
+arg=--system-prompt-file
+arg=/private/var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T/fm-supervision-host.Mh0wWf/prompt-changed/state/.supervision-host-prompt
+arg=--tools
+arg=Bash,Read
+arg=--permission-mode
+arg=dontAsk
+arg=--allowedTools
+arg=Bash
+arg=Read
+arg=--model
+arg=sonnet
+arg=--output-format
+arg=json
+arg=--add-dir
+arg=/private/var/folders/m7/v02n8pqn167dn42b0vdb3l4h0000gn/T/fm-supervision-host.Mh0wWf/prompt-changed
+arg=--resume
+arg=41e17530-ae8c-495f-a35f-ff3afdb77bbb
