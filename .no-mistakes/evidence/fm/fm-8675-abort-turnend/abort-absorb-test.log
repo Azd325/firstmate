@@ -1,3 +1,1 @@
-1..1
 ok - an aborted run is superseded by a newer busy verdict only under the opt-in flag
-FM_TEST_COMPLETE
