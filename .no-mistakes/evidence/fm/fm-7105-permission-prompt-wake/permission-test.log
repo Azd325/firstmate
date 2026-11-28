@@ -1,0 +1,5 @@
+ok - one permission request produces one durable decision signal without answering or changing busy state
+ok - arming a replacement closes the abandoned permission decision
+ok - a resume event closes the permission decision exactly once
+ok - later requests and replacement incarnations remain distinct; stale and malformed events are refused
+exit=0
